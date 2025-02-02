@@ -71,16 +71,67 @@ class Board:
         :param color: Цвет короля ("black" или "white").
         :return: True, если король под матом, иначе False.
         """
+        # Проверяем, находится ли король под шахом
         if not self.is_king_in_check(color):
             return False  # Король не под шахом
 
-        # Проверяем, есть ли допустимые ходы для короля
+        # Находим короля
+        king_pos = self.find_king_position(color)
+        if not king_pos:
+            return False  # Король не найден (невозможная ситуация)
+
+        # Проверяем, есть ли допустимые ходы у короля
+        king = self.grid[king_pos[0]][king_pos[1]]
+        king_moves = king.get_valid_moves(self.grid)
+        for move in king_moves:
+            # Сохраняем текущее состояние доски
+            temp_grid = [[self.grid[row][col] for col in range(8)] for row in range(8)]
+            temp_position = king.position
+
+            # Выполняем ход короля
+            self.grid[king_pos[0]][king_pos[1]] = None
+            self.grid[move[0]][move[1]] = king
+            king.position = move
+
+            # Проверяем, остался ли король под шахом после хода
+            if not self.is_king_in_check(color):
+                # Восстанавливаем исходное состояние доски
+                self.grid = temp_grid
+                king.position = temp_position
+                return False  # Король может уйти из-под шаха
+
+            # Восстанавливаем исходное состояние доски
+            self.grid = temp_grid
+            king.position = temp_position
+
+        # Проверяем, могут ли другие фигуры убрать короля из-под шаха
         for row in range(8):
             for col in range(8):
                 piece = self.grid[row][col]
-                if piece and piece.color == color:
-                    if piece.get_valid_moves(self.grid):
-                        return False  # Есть допустимые ходы
+                if piece and piece.color == color and not isinstance(piece, King):
+                    valid_moves = piece.get_valid_moves(self.grid)
+                    for move in valid_moves:
+                        # Сохраняем текущее состояние доски
+                        temp_grid = [[self.grid[row][col] for col in range(8)] for row in range(8)]
+                        temp_position = piece.position
+
+                        # Выполняем ход фигуры
+                        self.grid[row][col] = None
+                        self.grid[move[0]][move[1]] = piece
+                        piece.position = move
+
+                        # Проверяем, остался ли король под шахом после хода
+                        if not self.is_king_in_check(color):
+                            # Восстанавливаем исходное состояние доски
+                            self.grid = temp_grid
+                            piece.position = temp_position
+                            return False  # Фигура может убрать короля из-под шаха
+
+                        # Восстанавливаем исходное состояние доски
+                        self.grid = temp_grid
+                        piece.position = temp_position
+
+        # Если ни король, ни другие фигуры не могут убрать короля из-под шаха, это мат
         return True
 
     def is_stalemate(self, color):
@@ -291,21 +342,24 @@ class Board:
         pygame.display.set_caption("Game")
 
         running = True
-        while running:
+        game_over = False  # Флаг для отслеживания завершения игры
+
+        while running and not game_over:
             # Отрисовка доски
             screen.fill((0, 0, 0))
             self.draw(screen)
 
             # Проверка на мат или пат
-            if self.is_checkmate("white"):
-                self.show_message(screen, "Мат! Черные победили.")
-                running = False
-            elif self.is_checkmate("black"):
-                self.show_message(screen, "Мат! Белые победили.")
-                running = False
-            elif self.is_stalemate("white") or self.is_stalemate("black"):
-                self.show_message(screen, "Пат! Ничья.")
-                running = False
+            if not game_over:
+                if self.is_checkmate("white"):
+                    self.show_message(screen, "Мат! Черные победили.")
+                    game_over = True
+                elif self.is_checkmate("black"):
+                    self.show_message(screen, "Мат! Белые победили.")
+                    game_over = True
+                elif self.is_stalemate("white") or self.is_stalemate("black"):
+                    self.show_message(screen, "Пат! Ничья.")
+                    game_over = True
 
             # Обновление экрана
             pygame.display.flip()
@@ -316,7 +370,7 @@ class Board:
                     running = False
 
                 # Обработка кликов на доске
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Левая кнопка мыши
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not game_over:  # Левая кнопка мыши
                     mouse_pos = pygame.mouse.get_pos()
                     row = mouse_pos[1] // self.cell_size
                     col = mouse_pos[0] // self.cell_size
@@ -343,4 +397,5 @@ class Board:
         Возвращает игру в главное меню.
         """
         # Здесь можно добавить логику для возврата в главное меню
-        pass
+        from main import main
+        main()
