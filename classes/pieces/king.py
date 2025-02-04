@@ -1,4 +1,5 @@
 from classes.pieces.piece import Piece
+from classes.pieces.rook import Rook
 
 
 class King(Piece):
@@ -11,6 +12,7 @@ class King(Piece):
         """
         image_name = "bK.png" if color == "black" else "wK.png"
         super().__init__(color, position, cell_size, image_name)
+        self.has_moved = False  # Флаг, указывающий, двигался ли король
 
     def get_valid_moves(self, board):
         """
@@ -35,4 +37,71 @@ class King(Piece):
                 if target is None or target.color != self.color:  # Клетка пуста или занята фигурой противника
                     valid_moves.append((r, c))
 
+        # Добавляем рокировку, если король и ладья не двигались
+        if not self.has_moved:
+            # Короткая рокировка (в сторону королевского фланга)
+            if self.can_castle(board, row, col, 7):
+                valid_moves.append((row, col + 2))
+
+            # Длинная рокировка (в сторону ферзевого фланга)
+            if self.can_castle(board, row, col, 0):
+                valid_moves.append((row, col - 2))
+
         return valid_moves
+
+    def can_castle(self, board, row, col, rook_col):
+        """
+        Проверяет, возможна ли рокировка.
+        :param board: Двумерный список, представляющий доску.
+        :param row: Строка короля.
+        :param col: Столбец короля.
+        :param rook_col: Столбец ладьи (0 для длинной рокировки, 7 для короткой).
+        :return: True, если рокировка возможна, иначе False.
+        """
+        # Проверяем, что ладья существует и не двигалась
+        rook = board[row][rook_col]
+        if not isinstance(rook, Rook) or rook.has_moved:
+            return False
+
+        # Проверяем, что клетки между королем и ладьей пусты
+        if rook_col == 0:  # Длинная рокировка
+            for c in range(col - 1, rook_col, -1):
+                if board[row][c] is not None:
+                    return False
+        else:  # Короткая рокировка
+            for c in range(col + 1, rook_col):
+                if board[row][c] is not None:
+                    return False
+
+        # Проверяем, что король не находится под шахом
+        if self.is_square_attacked(board, row, col):
+            return False
+
+        # Проверяем, что клетки, через которые проходит король, не атакованы
+        if rook_col == 0:  # Длинная рокировка
+            for c in range(col - 1, rook_col, -1):
+                if self.is_square_attacked(board, row, c):
+                    return False
+        else:  # Короткая рокировка
+            for c in range(col + 1, rook_col):
+                if self.is_square_attacked(board, row, c):
+                    return False
+
+        return True
+
+    def is_square_attacked(self, board, row, col):
+        """
+        Проверяет, атакована ли клетка.
+        :param board: Двумерный список, представляющий доску.
+        :param row: Строка клетки.
+        :param col: Столбец клетки.
+        :return: True, если клетка атакована, иначе False.
+        """
+        opponent_color = "black" if self.color == "white" else "white"
+        for r in range(8):
+            for c in range(8):
+                piece = board[r][c]
+                if piece and piece.color == opponent_color:
+                    if (row, col) in piece.get_valid_moves(board):
+                        return True
+        return False

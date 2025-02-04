@@ -11,6 +11,7 @@ class Rook(Piece):
         """
         image_name = "bR.png" if color == "black" else "wR.png"
         super().__init__(color, position, cell_size, image_name)
+        self.has_moved = False  # Флаг, указывающий, двигался ли король
 
     def get_valid_moves(self, board):
         """
