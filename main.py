@@ -46,11 +46,9 @@ def main():
             # Обработка событий в меню
             result = menu.handle_event(event)
             if result == "Игра против компьютера":
-                print("Запуск игры против компьютера")
-                select_timer(screen, background, SCREEN_WIDTH, SCREEN_HEIGHT)
+                select_timer(screen, background, SCREEN_WIDTH, SCREEN_HEIGHT, mode="human_vs_ai")
             elif result == "Игра против человека":
-                print("Запуск игры против человека")
-                select_timer(screen, background, SCREEN_WIDTH, SCREEN_HEIGHT)
+                select_timer(screen, background, SCREEN_WIDTH, SCREEN_HEIGHT, mode="human_vs_human")
             elif result == "Выход":
                 running = False
 
@@ -59,13 +57,14 @@ def main():
     sys.exit()
 
 
-def select_timer(screen, background, screen_width, screen_height):
+def select_timer(screen, background, screen_width, screen_height, mode="human_vs_human"):
     """
     Меню выбора таймера.
     :param screen: Экран, на котором отрисовывается меню.
     :param background: Фоновое изображение.
     :param screen_width: Ширина экрана.
     :param screen_height: Высота экрана.
+    :param mode: Режим игры ("human_vs_human" или "human_vs_ai").
     """
     pygame.display.set_caption("Select timer")
     # Создание кнопок для выбора таймера
@@ -106,9 +105,8 @@ def select_timer(screen, background, screen_width, screen_height):
                 mouse_pos = pygame.mouse.get_pos()
                 for button in buttons:
                     if button.rect.collidepoint(mouse_pos):
-                        print(f"Выбрано время: {button.text}")
                         # Запуск доски
-                        board = Board(screen_width, screen_height)
+                        board = Board(screen_width, screen_height, mode=mode)
                         board.run()
                         running = False
 

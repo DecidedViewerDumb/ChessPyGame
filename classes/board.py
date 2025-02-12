@@ -2,6 +2,7 @@ import pygame
 from classes.game_state_checker import GameStateChecker
 from classes.board_renderer import BoardRenderer
 from classes.move_handler import MoveHandler
+from classes.ai import RandomAI
 from classes.pieces.king import King
 from classes.pieces.pawn import Pawn
 from classes.pieces.rook import Rook
@@ -11,7 +12,7 @@ from classes.pieces.queen import Queen
 
 
 class Board:
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, mode="human_vs_human"):
         """
         Инициализация доски.
         :param screen_width: Ширина экрана.
@@ -31,6 +32,10 @@ class Board:
         self.state_checker = GameStateChecker(self)
         self.renderer = BoardRenderer(self, screen_width, screen_height)
         self.move_handler = MoveHandler(self)
+
+        self.mode = mode  # Режим игры
+        if self.mode == "human_vs_ai":
+            self.ai = RandomAI(self)  # Инициализируем AI
 
     def add_pieces(self):
         """
@@ -145,6 +150,10 @@ class Board:
                     col = mouse_pos[0] // self.cell_size
                     self.handle_click(row, col)
 
+            # Ход компьютера (если режим "human_vs_ai" и текущий игрок — чёрные)
+            if self.mode == "human_vs_ai" and self.current_player == "black" and not game_over:
+                self.make_ai_move()
+
         self.return_to_main_menu()
 
     def show_message(self, screen, message):
@@ -166,3 +175,13 @@ class Board:
         """
         from main import main
         main()
+
+    def make_ai_move(self):
+        """
+        Выполняет ход компьютера.
+        """
+        move = self.ai.get_random_move()
+        if move:
+            (start_row, start_col), (end_row, end_col) = move
+            self.move_handler.handle_click(start_row, start_col)  # Выбираем фигуру
+            self.move_handler.handle_click(end_row, end_col)  # Выполняем ход

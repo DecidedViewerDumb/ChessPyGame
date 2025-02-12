@@ -1,4 +1,8 @@
+from classes.pieces.bishop import Bishop
+from classes.pieces.knight import Knight
+from classes.pieces.pawn import Pawn
 from classes.pieces.piece import Piece
+from classes.pieces.queen import Queen
 from classes.pieces.rook import Rook
 
 
@@ -98,10 +102,45 @@ class King(Piece):
         :return: True, если клетка атакована, иначе False.
         """
         opponent_color = "black" if self.color == "white" else "white"
-        for r in range(8):
-            for c in range(8):
+
+        # Проверяем атаки пешек
+        direction = 1 if opponent_color == "black" else -1
+        for dc in [-1, 1]:
+            r = row + direction
+            c = col + dc
+            if 0 <= r < 8 and 0 <= c < 8:
                 piece = board[r][c]
-                if piece and piece.color == opponent_color:
-                    if (row, col) in piece.get_valid_moves(board):
-                        return True
+                if isinstance(piece, Pawn) and piece.color == opponent_color:
+                    return True
+
+        # Проверяем атаки коней
+        knight_moves = [
+            (row - 2, col - 1), (row - 2, col + 1),
+            (row - 1, col - 2), (row - 1, col + 2),
+            (row + 1, col - 2), (row + 1, col + 2),
+            (row + 2, col - 1), (row + 2, col + 1),
+        ]
+        for r, c in knight_moves:
+            if 0 <= r < 8 and 0 <= c < 8:
+                piece = board[r][c]
+                if isinstance(piece, Knight) and piece.color == opponent_color:
+                    return True
+
+        # Проверяем атаки слонов, ладей и ферзей
+        for dr, dc in [(-1, -1), (-1, 1), (1, -1), (1, 1), (-1, 0), (1, 0), (0, -1), (0, 1)]:
+            r, c = row + dr, col + dc
+            while 0 <= r < 8 and 0 <= c < 8:
+                piece = board[r][c]
+                if piece is not None:
+                    if piece.color == opponent_color:
+                        if isinstance(piece, Bishop) and abs(dr) == abs(dc):
+                            return True
+                        if isinstance(piece, Rook) and (dr == 0 or dc == 0):
+                            return True
+                        if isinstance(piece, Queen):
+                            return True
+                    break
+                r += dr
+                c += dc
+
         return False

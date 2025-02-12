@@ -42,6 +42,35 @@ class MoveHandler:
                     if self.board.is_king_in_check(self.board.current_player):
                         self.board.valid_moves = self.filter_moves_in_check(self.board.selected_piece, self.board.valid_moves)
 
+    def filter_moves_in_check(self, piece, valid_moves):
+        """
+        Фильтрует допустимые ходы, оставляя только те, которые убирают короля из-под шаха.
+        :param piece: Фигура, которая ходит.
+        :param valid_moves: Список допустимых ходов.
+        :return: Отфильтрованный список допустимых ходов.
+        """
+        filtered_moves = []
+
+        for move in valid_moves:
+            # Сохраняем текущее состояние доски
+            temp_grid = [[self.board.grid[row][col] for col in range(8)] for row in range(8)]
+            temp_position = piece.position
+
+            # Выполняем ход
+            self.board.grid[piece.position[0]][piece.position[1]] = None
+            self.board.grid[move[0]][move[1]] = piece
+            piece.position = move
+
+            # Проверяем, остался ли король под шахом
+            if not self.board.is_king_in_check(self.board.current_player):
+                filtered_moves.append(move)
+
+            # Восстанавливаем исходное состояние доски
+            self.board.grid = [[temp_grid[row][col] for col in range(8)] for row in range(8)]
+            piece.position = temp_position
+
+        return filtered_moves
+
     def make_move(self, row, col):
         """
         Выполняет ход фигуры.
