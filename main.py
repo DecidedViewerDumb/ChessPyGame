@@ -70,7 +70,7 @@ def select_timer(screen, background, screen_width, screen_height, mode="human_vs
     # Создание кнопок для выбора таймера
     font = pygame.font.Font(None, 36)
     buttons = [
-        Button(200, 200, 50, "5 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
+        Button(200, 200, 50, "5 minutes", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
         Button(300, 200, 50, "10 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
         Button(400, 200, 50, "15 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
     ]
