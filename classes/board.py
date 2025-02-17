@@ -12,7 +12,7 @@ from classes.pieces.queen import Queen
 
 
 class Board:
-    def __init__(self, screen_width, screen_height, mode="human_vs_human"):
+    def __init__(self, screen_width, screen_height, mode="human_vs_human", timer_minutes=5):
         """
         Инициализация доски.
         :param screen_width: Ширина экрана.
@@ -36,6 +36,53 @@ class Board:
         self.mode = mode  # Режим игры
         if self.mode == "human_vs_ai":
             self.ai = RandomAI(self)  # Инициализируем AI
+
+        # Таймеры для игроков
+        self.timer_minutes = timer_minutes
+        self.white_time = timer_minutes * 60  # Время в секундах
+        self.black_time = timer_minutes * 60  # Время в секундах
+        self.last_time_update = pygame.time.get_ticks()  # Время последнего обновления таймера
+
+    def update_timers(self, screen):
+        """
+        Обновляет таймеры игроков.
+        """
+        current_time = pygame.time.get_ticks()
+        elapsed_time = (current_time - self.last_time_update) / 1000  # Время в секундах
+
+        if self.current_player == "white":
+            self.white_time -= elapsed_time
+        else:
+            self.black_time -= elapsed_time
+
+        self.last_time_update = current_time
+
+        # Проверяем, не истекло ли время у одного из игроков
+        if self.white_time <= 0:
+            self.white_time = 0
+            self.show_message(screen, "Время вышло! Черные победили.")
+            return True  # Игра завершена
+        elif self.black_time <= 0:
+            self.black_time = 0
+            self.show_message(screen, "Время вышло! Белые победили.")
+            return True  # Игра завершена
+
+        return False  # Игра продолжается
+
+    def draw_timers(self, screen):
+        """
+        Отрисовывает таймеры игроков на экране.
+        :param screen: Экран, на котором отрисовываются таймеры.
+        """
+        font = pygame.font.Font(None, 36)
+        white_time_str = f"Белые: {int(self.white_time // 60):02}:{int(self.white_time % 60):02}"
+        black_time_str = f"Черные: {int(self.black_time // 60):02}:{int(self.black_time % 60):02}"
+
+        white_text = font.render(white_time_str, True, (255, 255, 255))
+        black_text = font.render(black_time_str, True, (255, 255, 255))
+
+        screen.blit(white_text, (self.screen_width - 185, self.screen_height - 80))
+        screen.blit(black_text, (self.screen_width - 185, 40))
 
     def add_pieces(self):
         """
@@ -126,6 +173,13 @@ class Board:
         while running and not game_over:
             screen.fill((0, 0, 0))
             self.draw(screen)
+
+            # Обновляем таймеры
+            if self.update_timers(screen):
+                game_over = True  # Время одного из игроков истекло
+
+            # Отрисовываем таймеры
+            self.draw_timers(screen)
 
             if not game_over:
                 if self.is_checkmate("white"):

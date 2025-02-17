@@ -1,3 +1,5 @@
+import datetime
+import os
 from classes.pieces.king import King
 from classes.pieces.pawn import Pawn
 
@@ -5,6 +7,50 @@ from classes.pieces.pawn import Pawn
 class MoveHandler:
     def __init__(self, board):
         self.board = board
+        self.start_time = datetime.datetime.now()  # Время начала партии
+        self.log_file = self.create_log_file()  # Создаем файл для записи ходов
+
+    def __del__(self):
+        """
+        Закрываем файл при уничтожении объекта.
+        """
+        if hasattr(self, 'log_file'):
+            self.log_file.close()
+
+    def create_log_file(self):
+        """
+        Создает файл для записи ходов.
+        :return: Файловый объект.
+        """
+        if not os.path.exists("data"):
+            os.makedirs("data")
+        filename = f"data/Партия от {self.start_time.strftime('%Y-%m-%d %H-%M-%S')}.txt"
+        return open(filename, "w", encoding="utf-8")
+
+    def convert_to_chess_notation(self, position):
+        """
+        Преобразует координаты из числового формата (строка, столбец) в шахматный формат (буква столбца и номер строки).
+        :param position: Кортеж (строка, столбец).
+        :return: Строка в шахматной нотации (например, "a1").
+        """
+        row, col = position
+        # Преобразуем столбец в букву (0 -> 'a', 1 -> 'b', ..., 7 -> 'h')
+        col_char = chr(ord('a') + col)
+        # Преобразуем строку в номер (0 -> 8, 1 -> 7, ..., 7 -> 1)
+        row_num = 8 - row
+        return f"{col_char}{row_num}"
+
+    def log_move(self, move):
+        """
+        Записывает ход в файл в шахматной нотации.
+        :param move: Ход в формате ((start_row, start_col), (end_row, end_col)).
+        """
+        start_pos, end_pos = move
+        start_chess = self.convert_to_chess_notation(start_pos)
+        end_chess = self.convert_to_chess_notation(end_pos)
+        move_str = f"{self.board.current_player} {start_chess} -> {end_chess}\n"
+        self.log_file.write(move_str)
+        self.log_file.flush()  # Сбрасываем буфер, чтобы данные сразу записывались в файл
 
     def handle_click(self, row, col):
         """
@@ -79,6 +125,11 @@ class MoveHandler:
         """
         original_grid = [[self.board.grid[row][col] for col in range(8)] for row in range(8)]
         original_position = self.board.selected_piece.position
+
+        # Логируем ход
+        start_pos = self.board.selected_piece.position
+        end_pos = (row, col)
+        self.log_move((start_pos, end_pos))
 
         # Проверяем, является ли ход рокировкой
         if isinstance(self.board.selected_piece, King) and abs(col - original_position[1]) == 2:

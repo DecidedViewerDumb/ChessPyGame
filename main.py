@@ -105,8 +105,16 @@ def select_timer(screen, background, screen_width, screen_height, mode="human_vs
                 mouse_pos = pygame.mouse.get_pos()
                 for button in buttons:
                     if button.rect.collidepoint(mouse_pos):
-                        # Запуск доски
-                        board = Board(screen_width, screen_height, mode=mode)
+                        # Определяем выбранное время
+                        if button.text == "5 минут":
+                            timer_minutes = 5
+                        elif button.text == "10 минут":
+                            timer_minutes = 10
+                        elif button.text == "15 минут":
+                            timer_minutes = 15
+
+                        # Запуск доски с выбранным таймером
+                        board = Board(screen_width, screen_height, mode=mode, timer_minutes=timer_minutes)
                         board.run()
                         running = False
 
