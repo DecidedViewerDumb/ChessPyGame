@@ -1,105 +1,104 @@
 from classes.pieces.piece import Piece
 
-
 class Queen(Piece):
-    def __init__(self, color, position, cell_size):
+    def __init__(self, colour, position, cell_size):
         """
-        Инициализация королевы.
-        :param color: Цвет королевы ("black" или "white").
-        :param position: Позиция королевы на доске в виде кортежа (row, col).
-        :param cell_size: Размер клетки доски.
+        Initialize the queen.
+        :param colour: The queen's colour ("black" or "white").
+        :param position: The queen's position on the board as a tuple (row, col).
+        :param cell_size: The size of the board cell.
         """
-        image_name = "bQ.png" if color == "black" else "wQ.png"
-        super().__init__(color, position, cell_size, image_name)
+        image_name = "bQ.png" if colour == "black" else "wQ.png"
+        super().__init__(colour, position, cell_size, image_name)
 
     def get_valid_moves(self, board):
         """
-        Возвращает список допустимых ходов для королевы.
-        :param board: Двумерный список, представляющий доску.
-        :return: Список допустимых ходов в виде кортежей (row, col).
+        Returns a list of legal moves for the queen.
+        :param board: A two-dimensional list representing the board.
+        :return: A list of legal moves as (row, col) tuples.
         """
         valid_moves = []
         row, col = self.position
 
-        # Движение по горизонтали и вертикали (как у ладьи)
-        # Вверх
+        # Move horizontally and vertically (like a rook)
+        # Up
         r = row - 1
         while r >= 0:
             if board[r][col] is None:
                 valid_moves.append((r, col))
             else:
-                if board[r][col].color != self.color:
+                if board[r][col].colour != self.colour:
                     valid_moves.append((r, col))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a figure in the way
             r -= 1
 
-        # Вниз
+        # Down
         r = row + 1
         while r < 8:
             if board[r][col] is None:
                 valid_moves.append((r, col))
             else:
-                if board[r][col].color != self.color:
+                if board[r][col].colour != self.colour:
                     valid_moves.append((r, col))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             r += 1
 
-        # Влево
+        # Left
         c = col - 1
         while c >= 0:
             if board[row][c] is None:
                 valid_moves.append((row, c))
             else:
-                if board[row][c].color != self.color:
+                if board[row][c].colour != self.colour:
                     valid_moves.append((row, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             c -= 1
 
-        # Вправо
+        # Right
         c = col + 1
         while c < 8:
             if board[row][c] is None:
                 valid_moves.append((row, c))
             else:
-                if board[row][c].color != self.color:
+                if board[row][c].colour != self.colour:
                     valid_moves.append((row, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             c += 1
 
-        # Движение по диагонали (как у слона)
-        # Вверх-влево
+        # Diagonal movement (like an elephant)
+        # Up-left
         r, c = row - 1, col - 1
         while r >= 0 and c >= 0:
             if board[r][c] is None:
                 valid_moves.append((r, c))
             else:
-                if board[r][c].color != self.color:
+                if board[r][c].colour != self.colour:
                     valid_moves.append((r, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             r -= 1
             c -= 1
 
-        # Вверх-вправо
+        # Up-right
         r, c = row - 1, col + 1
         while r >= 0 and c < 8:
             if board[r][c] is None:
                 valid_moves.append((r, c))
             else:
-                if board[r][c].color != self.color:
+                if board[r][c].colour != self.colour:
                     valid_moves.append((r, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             r -= 1
             c += 1
 
-        # Вниз-влево
+        # Down-left
         r, c = row + 1, col - 1
         while r < 8 and c >= 0:
             if board[r][c] is None:
                 valid_moves.append((r, c))
             else:
-                if board[r][c].color != self.color:
+                if board[r][c].colour != self.colour:
                     valid_moves.append((r, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             r += 1
             c -= 1
 
@@ -109,9 +108,9 @@ class Queen(Piece):
             if board[r][c] is None:
                 valid_moves.append((r, c))
             else:
-                if board[r][c].color != self.color:
+                if board[r][c].colour != self.colour:
                     valid_moves.append((r, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             r += 1
             c += 1
 

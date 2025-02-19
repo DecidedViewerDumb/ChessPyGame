@@ -10,13 +10,12 @@ from classes.pieces.knight import Knight
 from classes.pieces.bishop import Bishop
 from classes.pieces.queen import Queen
 
-
 class Board:
-    def __init__(self, screen_width, screen_height, mode="human_vs_human"):
+    def __init__(self, screen_width, screen_height, mode="human_vs_human", timer_minutes=5):
         """
-        Инициализация доски.
-        :param screen_width: Ширина экрана.
-        :param screen_height: Высота экрана.
+        Initializing the board.
+        :param screen_width: Screen width.
+        :param screen_height: Screen height.
         """
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -33,79 +32,126 @@ class Board:
         self.renderer = BoardRenderer(self, screen_width, screen_height)
         self.move_handler = MoveHandler(self)
 
-        self.mode = mode  # Режим игры
+        self.mode = mode  # Game mode
         if self.mode == "human_vs_ai":
-            self.ai = RandomAI(self)  # Инициализируем AI
+            self.ai = RandomAI(self)  # Initializing AI
+
+        # Timers for players
+        self.timer_minutes = timer_minutes
+        self.white_time = timer_minutes * 60  # Time in seconds
+        self.black_time = timer_minutes * 60  # Time in seconds
+        self.last_time_update = pygame.time.get_ticks()  # Time of last timer update
+
+    def update_timers(self, screen):
+        """
+        Updates players' timers.
+        """
+        current_time = pygame.time.get_ticks()
+        elapsed_time = (current_time - self.last_time_update) / 1000  # Time in seconds
+
+        if self.current_player == "white":
+            self.white_time -= elapsed_time
+        else:
+            self.black_time -= elapsed_time
+
+        self.last_time_update = current_time
+
+          # Checking if one of the players has run out of time
+        if self.white_time <= 0:
+            self.white_time = 0
+            self.show_message(screen, "Times up! Black wins!.")
+            return True  # Game has finished
+        elif self.black_time <= 0:
+            self.black_time = 0
+            self.show_message(screen, "Times up! Whites win.")
+            return True  # Game has finished
+
+        return False  # Game continues
+
+    def draw_timers(self, screen):
+        """
+        Draws player timers on the screen.
+        :param screen: The screen on which the timers are drawn.
+        """
+        font = pygame.font.Font(None, 36)
+        white_time_str = f"White: {int(self.white_time // 60):02}:{int(self.white_time % 60):02}"
+        black_time_str = f"Black: {int(self.black_time // 60):02}:{int(self.black_time % 60):02}"
+
+        white_text = font.render(white_time_str, True, (255, 255, 255))
+        black_text = font.render(black_time_str, True, (255, 255, 255))
+
+        screen.blit(white_text, (self.screen_width - 185, self.screen_height - 80))
+        screen.blit(black_text, (self.screen_width - 185, 40))
 
     def add_pieces(self):
         """
-        Добавляет фигуры на доску.
+        Adds pieces to the board.
         """
-        # Добавляем черные пешки
+        # Adding black pawns
         for col in range(8):
             self.grid[1][col] = Pawn("black", (1, col), self.cell_size)
 
-        # Добавляем белые пешки
+        # Adding white pawns
         for col in range(8):
             self.grid[6][col] = Pawn("white", (6, col), self.cell_size)
 
-        # Добавляем черные ладьи
+        # Adding black rooks
         self.grid[0][0] = Rook("black", (0, 0), self.cell_size)
         self.grid[0][7] = Rook("black", (0, 7), self.cell_size)
 
-        # Добавляем белые ладьи
+        # Adding white rooks
         self.grid[7][0] = Rook("white", (7, 0), self.cell_size)
         self.grid[7][7] = Rook("white", (7, 7), self.cell_size)
 
-        # Добавляем черных коней
+        # Adding black knights
         self.grid[0][1] = Knight("black", (0, 1), self.cell_size)
         self.grid[0][6] = Knight("black", (0, 6), self.cell_size)
 
-        # Добавляем белых коней
+        # Adding white knights
         self.grid[7][1] = Knight("white", (7, 1), self.cell_size)
         self.grid[7][6] = Knight("white", (7, 6), self.cell_size)
 
-        # Добавляем черных слонов
+        # Adding black bishops
         self.grid[0][2] = Bishop("black", (0, 2), self.cell_size)
         self.grid[0][5] = Bishop("black", (0, 5), self.cell_size)
 
-        # Добавляем белых слонов
+        # Adding white bishops
         self.grid[7][2] = Bishop("white", (7, 2), self.cell_size)
         self.grid[7][5] = Bishop("white", (7, 5), self.cell_size)
 
-        # Добавляем черную королеву
+        # Adding black queen
         self.grid[0][3] = Queen("black", (0, 3), self.cell_size)
 
-        # Добавляем белую королеву
+        # Adding white queen
         self.grid[7][3] = Queen("white", (7, 3), self.cell_size)
 
-        # Добавляем черного короля
+        # Adding black king
         self.grid[0][4] = King("black", (0, 4), self.cell_size)
 
-        # Добавляем белого короля
+        # Adding white king
         self.grid[7][4] = King("white", (7, 4), self.cell_size)
 
-    def find_king_position(self, color):
+    def find_king_position(self, colour):
         """
-        Находит позицию короля на доске.
-        :param color: Цвет короля ("black" или "white").
-        :return: Позиция короля в виде кортежа (row, col).
+        Finds the king's position on the board.
+        :param colour: The king's colour ("black" or "white").
+        :return: The king's position as a tuple (row, col).
         """
         for row in range(8):
             for col in range(8):
                 piece = self.grid[row][col]
-                if isinstance(piece, King) and piece.color == color:
+                if isinstance(piece, King) and piece.colour == colour:
                     return row, col
         return None
 
-    def is_king_in_check(self, color):
-        return self.state_checker.is_king_in_check(color)
+    def is_king_in_check(self, colour):
+        return self.state_checker.is_king_in_check(colour)
 
-    def is_checkmate(self, color):
-        return self.state_checker.is_checkmate(color)
+    def is_checkmate(self, colour):
+        return self.state_checker.is_checkmate(colour)
 
-    def is_stalemate(self, color):
-        return self.state_checker.is_stalemate(color)
+    def is_stalemate(self, colour):
+        return self.state_checker.is_stalemate(colour)
 
     def draw(self, screen):
         self.renderer.draw(screen)
@@ -115,7 +161,7 @@ class Board:
 
     def run(self):
         """
-        Основной игровой цикл для шахматной доски.
+        Basic game cycle for a chessboard.
         """
         screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Game")
@@ -127,15 +173,22 @@ class Board:
             screen.fill((0, 0, 0))
             self.draw(screen)
 
+             # Updating timers
+            if self.update_timers(screen):
+                game_over = True  # One of the players time has expired
+
+            # Drawing timers
+            self.draw_timers(screen)
+
             if not game_over:
                 if self.is_checkmate("white"):
-                    self.show_message(screen, "Мат! Черные победили.")
+                    self.show_message(screen, "Checkmate! Black has won.")
                     game_over = True
                 elif self.is_checkmate("black"):
-                    self.show_message(screen, "Мат! Белые победили.")
+                    self.show_message(screen, "Checkmate! White has won.")
                     game_over = True
                 elif self.is_stalemate("white") or self.is_stalemate("black"):
-                    self.show_message(screen, "Пат! Ничья.")
+                    self.show_message(screen, "Stalemate! Draw.")
                     game_over = True
 
             pygame.display.flip()
@@ -150,7 +203,7 @@ class Board:
                     col = mouse_pos[0] // self.cell_size
                     self.handle_click(row, col)
 
-            # Ход компьютера (если режим "human_vs_ai" и текущий игрок — чёрные)
+            # Computer move (if "human_vs_ai" mode and current player are black)
             if self.mode == "human_vs_ai" and self.current_player == "black" and not game_over:
                 self.make_ai_move()
 
@@ -158,9 +211,9 @@ class Board:
 
     def show_message(self, screen, message):
         """
-        Отображает сообщение о результате игры.
-        :param screen: Экран, на котором отрисовывается сообщение.
-        :param message: Текст сообщения.
+        Displays a message about the game result.
+        :param screen: The screen on which the message is drawn.
+        :param message: The message text.
         """
         font = pygame.font.Font(None, 50)
         text = font.render(message, True, (255, 0, 0))
@@ -171,17 +224,17 @@ class Board:
 
     def return_to_main_menu(self):
         """
-        Возвращает игру в главное меню.
+        Returns the game to the main menu.
         """
         from main import main
         main()
 
     def make_ai_move(self):
         """
-        Выполняет ход компьютера.
+        Performs the computer's move.
         """
         move = self.ai.get_random_move()
         if move:
             (start_row, start_col), (end_row, end_col) = move
-            self.move_handler.handle_click(start_row, start_col)  # Выбираем фигуру
-            self.move_handler.handle_click(end_row, end_col)  # Выполняем ход
+            self.move_handler.handle_click(start_row, start_col)  # Select a chess piece
+            self.move_handler.handle_click(end_row, end_col)  # Making a move

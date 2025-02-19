@@ -1,6 +1,5 @@
 import pygame
 
-
 class BoardRenderer:
     def __init__(self, board, screen_width, screen_height):
         self.board = board
@@ -11,17 +10,17 @@ class BoardRenderer:
 
     def draw(self, screen):
         """
-        Отрисовка доски и фигур.
-        :param screen: Экран, на котором отрисовывается доска.
+        Drawing the board and pieces.
+        :param screen: The screen on which the board is drawn.
         """
-        colors = [(235, 235, 208), (119, 149, 86)]  # Цвета клеток (белый и зеленый)
+        colours = [(235, 235, 208), (119, 149, 86)]  # Cell colours (white and green)
 
         for row in range(8):
             for col in range(8):
-                color = colors[(row + col) % 2]
+                colour = colours[(row + col) % 2]
                 x = col * self.cell_size
                 y = row * self.cell_size
-                pygame.draw.rect(screen, color, (x, y, self.cell_size, self.cell_size))
+                pygame.draw.rect(screen, colour, (x, y, self.cell_size, self.cell_size))
 
                 if (row, col) in self.board.valid_moves:
                     pygame.draw.rect(screen, (255, 0, 0), (x, y, self.cell_size, self.cell_size), 3)
@@ -29,7 +28,7 @@ class BoardRenderer:
                 if self.board.grid[row][col] is not None:
                     self.board.grid[row][col].draw(screen)
 
-        text = self.font.render(f"Ход: {self.board.current_player}", True, (255, 255, 255))
+        text = self.font.render(f"Move: {self.board.current_player}", True, (255, 255, 255))
         screen.blit(text, (self.screen_width - 150, 275))
 
         if self.board.is_king_in_check("white"):

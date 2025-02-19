@@ -1,39 +1,38 @@
 from classes.pieces.king import King
 
-
 class GameStateChecker:
     def __init__(self, board):
         self.board = board
 
-    def is_king_in_check(self, color):
+    def is_king_in_check(self, colour):
         """
-        Проверяет, находится ли король под шахом.
-        :param color: Цвет короля ("black" или "white").
-        :return: True, если король под шахом, иначе False.
+        Checks if the king is in check.
+        :param colour: The colour of the king ("black" or "white").
+        :return: True if the king is in check, False otherwise.
         """
-        king_pos = self.board.find_king_position(color)
+        king_pos = self.board.find_king_position(colour)
         if not king_pos:
             return False
 
-        opponent_color = "black" if color == "white" else "white"
+        opponent_colourr = "black" if colour == "white" else "white"
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
-                if piece and piece.color == opponent_color:
+                if piece and piece.colour == opponent_colour:
                     if king_pos in piece.get_valid_moves(self.board.grid):
                         return True
         return False
 
-    def is_checkmate(self, color):
+    def is_checkmate(self, colour):
         """
-        Проверяет, находится ли король под матом.
-        :param color: Цвет короля ("black" или "white").
-        :return: True, если король под матом, иначе False.
+        Checks if the king is checkmated.
+        :param colour: The colour of the king ("black" or "white").
+        :return: True if the king is checkmated, otherwise False.
         """
-        if not self.is_king_in_check(color):
+        if not self.is_king_in_check(colour):
             return False
 
-        king_pos = self.board.find_king_position(color)
+        king_pos = self.board.find_king_position(colour)
         if not king_pos:
             return False
 
@@ -47,7 +46,7 @@ class GameStateChecker:
             self.board.grid[move[0]][move[1]] = king
             king.position = move
 
-            if not self.is_king_in_check(color):
+            if not self.is_king_in_check(colour):
                 self.board.grid = temp_grid
                 king.position = temp_position
                 return False
@@ -58,7 +57,7 @@ class GameStateChecker:
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
-                if piece and piece.color == color and not isinstance(piece, King):
+                if piece and piece.colour == colour and not isinstance(piece, King):
                     valid_moves = piece.get_valid_moves(self.board.grid)
                     for move in valid_moves:
                         temp_grid = [[self.board.grid[row][col] for col in range(8)] for row in range(8)]
@@ -68,7 +67,7 @@ class GameStateChecker:
                         self.board.grid[move[0]][move[1]] = piece
                         piece.position = move
 
-                        if not self.is_king_in_check(color):
+                        if not self.is_king_in_check(colour):
                             self.board.grid = temp_grid
                             piece.position = temp_position
                             return False
@@ -78,19 +77,19 @@ class GameStateChecker:
 
         return True
 
-    def is_stalemate(self, color):
+    def is_stalemate(self, colour):
         """
-        Проверяет, находится ли король под патом.
-        :param color: Цвет короля ("black" или "white").
-        :return: True, если король под патом, иначе False.
+        Checks if the king is stalemate.
+        :param colour: The colour of the king ("black" or "white").
+        :return: True if the king is stalemate, False otherwise.
         """
-        if self.is_king_in_check(color):
+        if self.is_king_in_check(colour):
             return False
 
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
-                if piece and piece.color == color:
+                if piece and piece.colour == colour:
                     if piece.get_valid_moves(self.board.grid):
                         return False
         return True
