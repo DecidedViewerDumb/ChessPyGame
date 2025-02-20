@@ -14,7 +14,7 @@ class GameStateChecker:
         if not king_pos:
             return False
 
-        opponent_colourr = "black" if colour == "white" else "white"
+        opponent_colour = "black" if colour == "white" else "white"
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
