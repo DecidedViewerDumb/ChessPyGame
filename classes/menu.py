@@ -20,7 +20,7 @@ class Menu:
         """
         buttons = [
             Button(200, 200, 50, "Play against the computer", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
-            Button(300, 200, 50, "Playing against a person", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
+            Button(300, 200, 50, "Play against a person", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
             Button(400, 200, 50, "Exit", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
         ]
         return buttons
