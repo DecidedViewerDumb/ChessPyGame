@@ -2,15 +2,17 @@ from classes.pieces.piece import Piece
 
 
 class Pawn(Piece):
-    def __init__(self, color, position, cell_size):
+    def __init__(self, color, position, cell_size, start_x, start_y):
         """
         Инициализация пешки.
         :param color: Цвет пешки ("black" или "white").
         :param position: Позиция пешки на доске в виде кортежа (row, col).
         :param cell_size: Размер клетки доски.
+        :param start_x: Начальные координаты по X.
+        :param start_y: Начальные координаты по Y.
         """
         image_name = "bp.png" if color == "black" else "wp.png"
-        super().__init__(color, position, cell_size, image_name)
+        super().__init__(color, position, cell_size, image_name, start_x, start_y)
         self.has_moved = False  # Флаг, указывающий, двигалась ли пешка
 
     def get_valid_moves(self, board):
