@@ -197,7 +197,12 @@ class Board:
         self.renderer.draw(screen)
 
     def handle_click(self, row, col):
-        self.move_handler.handle_click(row, col)
+        if 0 <= row < 8 and 0 <= col < 8:  # Проверка границ доски
+            self.move_handler.handle_click(row, col)
+        else:
+            self.selected_piece = None
+            self.valid_moves = []
+            return
 
     def run(self):
         """
@@ -239,9 +244,14 @@ class Board:
 
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not game_over:
                     mouse_pos = pygame.mouse.get_pos()
-                    row = mouse_pos[1] // self.cell_size
-                    col = mouse_pos[0] // self.cell_size
-                    self.handle_click(row, col)
+
+                    # Проверяем, что клик был в пределах доски
+                    if (self.board_start_x <= mouse_pos[0] < self.board_start_x + 8 * self.cell_size and
+                            self.board_start_y <= mouse_pos[1] < self.board_start_y + 8 * self.cell_size):
+                        # Конвертируем координаты только для кликов внутри доски
+                        row = (mouse_pos[1] - self.board_start_y) // self.cell_size
+                        col = (mouse_pos[0] - self.board_start_x) // self.cell_size
+                        self.handle_click(row, col)
 
             # Ход компьютера (если режим "human_vs_ai" и текущий игрок — чёрные)
             if self.mode == "human_vs_ai" and self.current_player == "black" and not game_over:
