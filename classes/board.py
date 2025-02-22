@@ -43,6 +43,7 @@ class Board:
         self.selected_piece = None
         self.valid_moves = []
         self.current_player = "white"
+        self.en_passant_target = None
 
         self.state_checker = GameStateChecker(self)
         self.renderer = BoardRenderer(
@@ -124,11 +125,15 @@ class Board:
         """
         # Добавляем черные пешки
         for col in range(8):
-            self.grid[1][col] = Pawn("black", (1, col), self.cell_size, self.board_start_x, self.board_start_y)
+            pawn = Pawn("black", (1, col), self.cell_size, self.board_start_x, self.board_start_y)
+            pawn.board = self  # Добавляем ссылку на доску
+            self.grid[1][col] = pawn
 
         # Добавляем белые пешки
         for col in range(8):
-            self.grid[6][col] = Pawn("white", (6, col), self.cell_size, self.board_start_x, self.board_start_y)
+            pawn = Pawn("white", (6, col), self.cell_size, self.board_start_x, self.board_start_y)
+            pawn.board = self
+            self.grid[6][col] = pawn
 
         # Добавляем черные ладьи
         self.grid[0][0] = Rook("black", (0, 0), self.cell_size, self.board_start_x, self.board_start_y)

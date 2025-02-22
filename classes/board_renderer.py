@@ -41,7 +41,7 @@ class BoardRenderer:
 
         # Подписи столбцов (a-h)
         for col in range(8):
-            letter = chr(ord('a') + col)
+            letter = chr(ord('A') + col)
             text = self.font.render(letter, True, (0, 0, 0))
             text_rect = text.get_rect(
                 center=(

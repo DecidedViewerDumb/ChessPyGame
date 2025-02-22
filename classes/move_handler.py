@@ -125,6 +125,25 @@ class MoveHandler:
         """
         original_grid = [[self.board.grid[row][col] for col in range(8)] for row in range(8)]
         original_position = self.board.selected_piece.position
+        start_row, start_col = original_position
+        piece = self.board.selected_piece
+
+        # Сброс флага взятия на проходе
+        self.board.en_passant_target = None
+
+        # Обработка взятия на проходе
+        if isinstance(piece, Pawn):
+            # Ход на две клетки - устанавливаем правильную целевую позицию
+            if abs(row - start_row) == 2:
+                direction = 1 if piece.color == "black" else -1
+                self.board.en_passant_target = (start_row + direction, start_col)  # Позиция ПРОМЕЖУТОЧНОЙ клетки
+
+            # Выполнение взятия на проходе
+            if col != start_col and self.board.grid[row][col] is None:
+                # Удаляем пешку противника
+                captured_row = start_row  # Ряд где стояла атакующая пешка
+                captured_col = col  # Колонка куда пошла цель
+                self.board.grid[captured_row][captured_col] = None
 
         # Логируем ход
         start_pos = self.board.selected_piece.position
@@ -156,6 +175,10 @@ class MoveHandler:
 
                 # Меняем игрока
                 self.board.current_player = "black" if self.board.current_player == "white" else "white"
+
+        # Обновление флага has_moved для пешки
+        if isinstance(piece, Pawn):
+            piece.has_moved = True
 
         # Сбрасываем выбор фигуры
         self.board.selected_piece = None
