@@ -40,17 +40,28 @@ class King(Piece):
         for r, c in moves:
             if 0 <= r < 8 and 0 <= c < 8:  # Проверяем, что ход находится в пределах доски
                 target = board[r][c]
-                if target is None or target.color != self.color:  # Клетка пуста или занята фигурой противника
-                    valid_moves.append((r, c))
+                if target is None or target.color != self.color:
+                    # Временное перемещение короля для проверки безопасности
+                    original = board[row][col]
+                    board[row][col] = None
+                    temp_king = King(self.color, (r, c), self.cell_size, self.start_x, self.start_y)
+                    board[r][c] = temp_king
+
+                    if not temp_king.is_square_attacked(board, r, c):
+                        valid_moves.append((r, c))
+
+                    # Восстановление исходного состояния
+                    board[row][col] = original
+                    board[r][c] = target
 
         # Добавляем рокировку, если король и ладья не двигались
         if not self.has_moved:
             # Короткая рокировка (в сторону королевского фланга)
-            if self.can_castle(board, row, col, 7):
+            if self.can_castle(board, row, col, 7) and not self.is_square_attacked(board, row, col):
                 valid_moves.append((row, col + 2))
 
             # Длинная рокировка (в сторону ферзевого фланга)
-            if self.can_castle(board, row, col, 0):
+            if self.can_castle(board, row, col, 0) and not self.is_square_attacked(board, row, col):
                 valid_moves.append((row, col - 2))
 
         return valid_moves
@@ -107,13 +118,14 @@ class King(Piece):
 
         # Проверяем атаки пешек
         direction = 1 if opponent_color == "black" else -1
-        for dc in [-1, 1]:
-            r = row + direction
-            c = col + dc
-            if 0 <= r < 8 and 0 <= c < 8:
-                piece = board[r][c]
-                if isinstance(piece, Pawn) and piece.color == opponent_color:
-                    return True
+        if (row + direction < 8) and (col - 1 >= 0):
+            if (isinstance(board[row + direction][col - 1], Pawn) and
+                    board[row + direction][col - 1].color == opponent_color):
+                return True
+        if (row + direction < 8) and (col + 1 < 8):
+            if (isinstance(board[row + direction][col + 1], Pawn) and
+                    board[row + direction][col + 1].color == opponent_color):
+                return True
 
         # Проверяем атаки коней
         knight_moves = [
