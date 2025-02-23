@@ -1,3 +1,5 @@
+import os
+
 import pygame
 from classes.game_state_checker import GameStateChecker
 from classes.board_renderer import BoardRenderer
@@ -64,6 +66,55 @@ class Board:
         self.white_time = timer_minutes * 60  # Время в секундах
         self.black_time = timer_minutes * 60  # Время в секундах
         self.last_time_update = pygame.time.get_ticks()  # Время последнего обновления таймера
+        self.promotion_pawn = None
+        self.promotion_active = False
+        self.promotion_piece = None
+        self.promotion_buttons = []
+
+    def draw_promotion_menu(self, screen, pawn):
+        colors = [(235, 235, 208), (119, 149, 86)]
+        menu_width = 4 * self.cell_size
+
+        col = pawn.position[1]
+        if col < 2:
+            menu_x = self.board_start_x
+        elif col > 5:
+            menu_x = self.board_start_x + (8 - 4) * self.cell_size
+        else:
+            menu_x = self.board_start_x + (col - 1) * self.cell_size
+        menu_y = self.board_start_y + pawn.position[0] * self.cell_size
+
+        # Корректируем позицию для черных пешек
+        if pawn.color == "black":
+            menu_y -= 3 * self.cell_size
+
+        # Рамка окна выбора
+        pygame.draw.rect(screen, (0, 0, 0), (menu_x - 2, menu_y - 2, menu_width + 4, self.cell_size + 4), 3)
+
+        pieces = [Queen, Rook, Bishop, Knight]
+
+        self.promotion_buttons = []
+        for i, piece_class in enumerate(pieces):
+            x = menu_x + i * self.cell_size
+            rect = pygame.Rect(x, menu_y, self.cell_size, self.cell_size)
+            self.promotion_buttons.append((rect, piece_class))
+
+            # Отрисовка кнопки с рамкой
+            pygame.draw.rect(screen, colors[i % 2], rect)
+            pygame.draw.rect(screen, (0, 0, 0), rect, 1)
+
+            name_piece = piece_class.__name__[0] if not piece_class == Knight else 'N'
+            image_name = f"{'b' if pawn.color == 'black' else 'w'}{name_piece}.png"
+            image = pygame.image.load(os.path.join("images", image_name))
+            image = pygame.transform.scale(image, (self.cell_size, self.cell_size))
+            screen.blit(image, (x, menu_y))
+
+    def handle_promotion_click(self, mouse_pos):
+        for rect, piece_class in self.promotion_buttons:
+            if rect.collidepoint(mouse_pos):
+                self.promotion_piece = piece_class
+                return True
+        return False
 
     def update_timers(self, screen):
         """

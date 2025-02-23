@@ -36,33 +36,30 @@ class King(Piece):
             (row + 1, col - 1), (row + 1, col), (row + 1, col + 1),  # Нижние клетки
         ]
 
-        # Проверяем каждый ход
+        # Проверка обычных ходов
         for r, c in moves:
-            if 0 <= r < 8 and 0 <= c < 8:  # Проверяем, что ход находится в пределах доски
+            if 0 <= r < 8 and 0 <= c < 8:
                 target = board[r][c]
-                if target is None or target.color != self.color:
-                    # Временное перемещение короля для проверки безопасности
-                    original = board[row][col]
-                    board[row][col] = None
-                    temp_king = King(self.color, (r, c), self.cell_size, self.start_x, self.start_y)
-                    board[r][c] = temp_king
 
-                    if not temp_king.is_square_attacked(board, r, c):
-                        valid_moves.append((r, c))
+                # Пропускаем свои фигуры
+                if target and target.color == self.color:
+                    continue
 
-                    # Восстановление исходного состояния
-                    board[row][col] = original
-                    board[r][c] = target
+                # Временное перемещение короля
+                original = board[row][col]
+                temp = board[r][c]
+                board[row][col] = None
+                board[r][c] = self
+                self.position = (r, c)
 
-        # Добавляем рокировку, если король и ладья не двигались
-        if not self.has_moved:
-            # Короткая рокировка (в сторону королевского фланга)
-            if self.can_castle(board, row, col, 7) and not self.is_square_attacked(board, row, col):
-                valid_moves.append((row, col + 2))
+                # Проверка безопасности клетки
+                if not self.is_square_attacked(board, r, c):
+                    valid_moves.append((r, c))
 
-            # Длинная рокировка (в сторону ферзевого фланга)
-            if self.can_castle(board, row, col, 0) and not self.is_square_attacked(board, row, col):
-                valid_moves.append((row, col - 2))
+                # Восстановление доски
+                board[row][col] = original
+                board[r][c] = temp
+                self.position = (row, col)
 
         return valid_moves
 
@@ -116,16 +113,20 @@ class King(Piece):
         """
         opponent_color = "black" if self.color == "white" else "white"
 
-        # Проверяем атаки пешек
-        direction = 1 if opponent_color == "black" else -1
-        if (row + direction < 8) and (col - 1 >= 0):
-            if (isinstance(board[row + direction][col - 1], Pawn) and
-                    board[row + direction][col - 1].color == opponent_color):
-                return True
-        if (row + direction < 8) and (col + 1 < 8):
-            if (isinstance(board[row + direction][col + 1], Pawn) and
-                    board[row + direction][col + 1].color == opponent_color):
-                return True
+        # Проверка атак пешек
+        pawn_direction = 1 if opponent_color == "black" else -1  # Черные пешки двигаются вниз (увеличение row)
+
+        # Проверяем диагональные клетки для взятия пешкой
+        attack_squares = [
+            (row - pawn_direction, col - 1),
+            (row - pawn_direction, col + 1)
+        ]
+
+        for r, c in attack_squares:
+            if 0 <= r < 8 and 0 <= c < 8:
+                piece = board[r][c]
+                if isinstance(piece, Pawn) and piece.color == opponent_color:
+                    return True
 
         # Проверяем атаки коней
         knight_moves = [

@@ -1,5 +1,8 @@
 import datetime
 import os
+
+import pygame
+
 from classes.pieces.king import King
 from classes.pieces.pawn import Pawn
 
@@ -179,6 +182,42 @@ class MoveHandler:
         # Обновление флага has_moved для пешки
         if isinstance(piece, Pawn):
             piece.has_moved = True
+
+        # После перемещения короля
+        if isinstance(piece, King):
+            # Проверяем, остался ли король под шахом
+            if self.board.is_king_in_check(self.board.current_player):
+                self.board.grid = original_grid
+                piece.position = original_position
+                return  # Отмена хода
+
+        if isinstance(piece, Pawn) and ((piece.color == "white" and row == 0) or (piece.color == "black" and row == 7)):
+            self.board.promotion_active = True
+            self.board.promotion_pawn = piece
+            self.board.promotion_pos = (row, col)
+
+            while self.board.promotion_active:
+                screen = pygame.display.get_surface()
+                self.board.draw(screen)
+                self.board.draw_promotion_menu(screen, self.board.promotion_pawn)
+                pygame.display.flip()
+
+                for event in pygame.event.get():
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if self.board.handle_promotion_click(event.pos):
+                            self.board.promotion_active = False
+
+            # Замена пешки на выбранную фигуру
+            new_piece = self.board.promotion_piece(
+                self.board.promotion_pawn.color,
+                (row, col),
+                self.board.cell_size,
+                self.board.board_start_x,
+                self.board.board_start_y
+            )
+            self.board.grid[self.board.promotion_pos[0]][self.board.promotion_pos[1]] = new_piece
+        self.board.promotion_pawn = None
+        self.board.promotion_piece = None
 
         # Сбрасываем выбор фигуры
         self.board.selected_piece = None
