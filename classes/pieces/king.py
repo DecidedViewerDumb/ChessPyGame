@@ -36,6 +36,17 @@ class King(Piece):
             (row + 1, col - 1), (row + 1, col), (row + 1, col + 1),  # Нижние клетки
         ]
 
+        # Найдем позицию вражеского короля
+        enemy_king_pos = None
+        for r in range(8):
+            for c in range(8):
+                piece = board[r][c]
+                if isinstance(piece, King) and piece.color != self.color:
+                    enemy_king_pos = (r, c)
+                    break
+            if enemy_king_pos:
+                break
+
         # Проверка обычных ходов
         for r, c in moves:
             if 0 <= r < 8 and 0 <= c < 8:
@@ -45,21 +56,16 @@ class King(Piece):
                 if target and target.color == self.color:
                     continue
 
-                # Временное перемещение короля
-                original = board[row][col]
-                temp = board[r][c]
-                board[row][col] = None
-                board[r][c] = self
-                self.position = (r, c)
-
                 # Проверка безопасности клетки
                 if not self.is_square_attacked(board, r, c):
-                    valid_moves.append((r, c))
 
-                # Восстановление доски
-                board[row][col] = original
-                board[r][c] = temp
-                self.position = (row, col)
+                    # Проверка расстояния до вражеского короля
+                    if enemy_king_pos:
+                        enemy_row, enemy_col = enemy_king_pos
+                        if abs(r - enemy_row) <= 1 and abs(c - enemy_col) <= 1:
+                            continue  # Пропускаем ход, если короли будут рядом
+
+                    valid_moves.append((r, c))
 
         return valid_moves
 
