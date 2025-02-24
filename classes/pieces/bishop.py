@@ -1,15 +1,17 @@
 from classes.pieces.piece import Piece
 
 class Bishop(Piece):
-    def __init__(self, colour, position, cell_size):
+    def __init__(self, color, position, cell_size, start_x, start_y):
         """
         Initialize the bishop.
     :param colour: The colour of the bishop ("black" or "white").
     :param position: The position of the bishop on the board as a tuple (row, col).
     :param cell_size: The size of the board cell.
+    :param start_x: Initial X coordinates.
+    :param start_y: Initial Y coordinates.
         """
         image_name = "bB.png" if colour == "black" else "wB.png"
-        super().__init__(colour, position, cell_size, image_name)
+        super().__init__(color, position, cell_size, image_name, start_x, start_y)
 
     def get_valid_moves(self, board):
         """
