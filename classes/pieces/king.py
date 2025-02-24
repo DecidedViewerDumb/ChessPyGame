@@ -6,15 +6,17 @@ from classes.pieces.queen import Queen
 from classes.pieces.rook import Rook
 
 class King(Piece):
-    def __init__(self, colour, position, cell_size):
+    def __init__(self, color, position, cell_size, start_x, start_y):
         """
         Initialize the king.
         :param colour: The colour of the king ("black" or "white").
         :param position: The position of the king on the board as a tuple (row, col).
         :param cell_size: The size of the board cell.
+        :param start_x: Initial X coordinates.
+        :param start_y: Initial Y coordinates.
             """
         image_name = "bK.png" if colour == "black" else "wK.png"
-        super().__init__(colour, position, cell_size, image_name)
+        super().__init__(color, position, cell_size, image_name, start_x, start_y)
         self.has_moved = False  # Flag indicating whether the king has moved
 
     def get_valid_moves(self, board):
