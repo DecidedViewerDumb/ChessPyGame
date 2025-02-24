@@ -19,8 +19,23 @@ class Board:
         """
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.cell_size = min(screen_width, screen_height) // 8
+        
+        # Area sizes
+        self.board_width = int(screen_width * 0.7)  # 70% под доску
+        self.info_panel_width = screen_width - self.board_width
 
+        # Calculation of board parameters
+        self.border_size = 20
+        self.cell_size = (self.board_width - 2 * self.border_size) // 8
+
+        # Board position
+        self.board_start_x = self.border_size
+        self.board_start_y = (screen_height - (self.cell_size * 8)) // 2
+
+        # Position of the information panel
+        self.info_panel_x = self.board_width
+        
+        self.info_panel_y = 50
         self.grid = [[None for _ in range(8)] for _ in range(8)]
         self.add_pieces()
 
@@ -29,7 +44,13 @@ class Board:
         self.current_player = "white"
 
         self.state_checker = GameStateChecker(self)
-        self.renderer = BoardRenderer(self, screen_width, screen_height)
+        self.renderer = BoardRenderer(
+            self,
+            self.board_start_x,
+            self.board_start_y,
+            self.cell_size,
+            self.border_size
+        )        
         self.move_handler = MoveHandler(self)
 
         self.mode = mode  # Game mode
@@ -74,14 +95,27 @@ class Board:
         :param screen: The screen on which the timers are drawn.
         """
         font = pygame.font.Font(None, 36)
+
+        pygame.draw.rect(screen, (50, 50, 50), (self.info_panel_x, 0, self.info_panel_width, self.screen_height))
+
+        # Positioning in the right panel
+        panel_center_x = self.info_panel_x + self.info_panel_width // 2
+
+        # Current player
+        text = font.render(f"Ход: {self.current_player}", True, (255, 255, 255))
+        text_rect = text.get_rect(center=(panel_center_x, self.screen_height // 2))
+        screen.blit(text, text_rect)
+
+        # Timers
         white_time_str = f"White: {int(self.white_time // 60):02}:{int(self.white_time % 60):02}"
         black_time_str = f"Black: {int(self.black_time // 60):02}:{int(self.black_time % 60):02}"
 
         white_text = font.render(white_time_str, True, (255, 255, 255))
         black_text = font.render(black_time_str, True, (255, 255, 255))
 
-        screen.blit(white_text, (self.screen_width - 185, self.screen_height - 80))
-        screen.blit(black_text, (self.screen_width - 185, 40))
+        # Timer location
+        screen.blit(white_text, (panel_center_x - white_text.get_width() // 2, self.screen_height - 50))
+        screen.blit(black_text, (panel_center_x - black_text.get_width() // 2, self.info_panel_y))
 
     def add_pieces(self):
         """
@@ -89,47 +123,47 @@ class Board:
         """
         # Adding black pawns
         for col in range(8):
-            self.grid[1][col] = Pawn("black", (1, col), self.cell_size)
+            self.grid[1][col] = Pawn("black", (1, col), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding white pawns
         for col in range(8):
-            self.grid[6][col] = Pawn("white", (6, col), self.cell_size)
+            self.grid[6][col] = Pawn("white", (6, col), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding black rooks
-        self.grid[0][0] = Rook("black", (0, 0), self.cell_size)
-        self.grid[0][7] = Rook("black", (0, 7), self.cell_size)
+        self.grid[0][0] = Rook("black", (0, 0), self.cell_size, self.board_start_x, self.board_start_y)
+        self.grid[0][7] = Rook("black", (0, 7), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding white rooks
-        self.grid[7][0] = Rook("white", (7, 0), self.cell_size)
-        self.grid[7][7] = Rook("white", (7, 7), self.cell_size)
+        self.grid[0][0] = Rook("white", (0, 0), self.cell_size, self.board_start_x, self.board_start_y)
+        self.grid[0][7] = Rook("white", (0, 7), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding black knights
-        self.grid[0][1] = Knight("black", (0, 1), self.cell_size)
-        self.grid[0][6] = Knight("black", (0, 6), self.cell_size)
+        self.grid[0][1] = Knight("black", (0, 1), self.cell_size, self.board_start_x, self.board_start_y)
+        self.grid[0][6] = Knight("black", (0, 6), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding white knights
-        self.grid[7][1] = Knight("white", (7, 1), self.cell_size)
-        self.grid[7][6] = Knight("white", (7, 6), self.cell_size)
-
+        self.grid[0][1] = Knight("white", (0, 1), self.cell_size, self.board_start_x, self.board_start_y)
+        self.grid[0][6] = Knight("white", (0, 6), self.cell_size, self.board_start_x, self.board_start_y)
+        
         # Adding black bishops
-        self.grid[0][2] = Bishop("black", (0, 2), self.cell_size)
-        self.grid[0][5] = Bishop("black", (0, 5), self.cell_size)
-
+        self.grid[0][2] = Bishop("black", (0, 2), self.cell_size, self.board_start_x, self.board_start_y)
+        self.grid[0][5] = Bishop("black", (0, 5), self.cell_size, self.board_start_x, self.board_start_y)
+        
         # Adding white bishops
-        self.grid[7][2] = Bishop("white", (7, 2), self.cell_size)
-        self.grid[7][5] = Bishop("white", (7, 5), self.cell_size)
+        self.grid[0][2] = Bishop("white", (0, 2), self.cell_size, self.board_start_x, self.board_start_y)
+        self.grid[0][5] = Bishop("white", (0, 5), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding black queen
-        self.grid[0][3] = Queen("black", (0, 3), self.cell_size)
+        self.grid[0][3] = Queen("black", (0, 3), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding white queen
-        self.grid[7][3] = Queen("white", (7, 3), self.cell_size)
+        self.grid[7][3] = Queen("white", (7, 3), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding black king
-        self.grid[0][4] = King("black", (0, 4), self.cell_size)
+        self.grid[0][4] = King("black", (0, 4), self.cell_size, self.board_start_x, self.board_start_y)
 
         # Adding white king
-        self.grid[7][4] = King("white", (7, 4), self.cell_size)
+        self.grid[7][4] = King("white", (7, 4), self.cell_size, self.board_start_x, self.board_start_y)
 
     def find_king_position(self, colour):
         """
@@ -173,12 +207,12 @@ class Board:
             screen.fill((0, 0, 0))
             self.draw(screen)
 
+            # Drawing timers
+            self.draw_timers(screen)
+
              # Updating timers
             if self.update_timers(screen):
                 game_over = True  # One of the players time has expired
-
-            # Drawing timers
-            self.draw_timers(screen)
 
             if not game_over:
                 if self.is_checkmate("white"):
