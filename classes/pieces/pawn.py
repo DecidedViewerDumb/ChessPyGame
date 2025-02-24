@@ -2,15 +2,17 @@ from classes.pieces.piece import Piece
 
 
 class Pawn(Piece):
-    def __init__(self, colour, position, cell_size):
+    def __init__(self, color, position, cell_size, start_x, start_y):
         """
         Initialize the pawn.
         :param colour: The colour of the pawn ("black" or "white").
         :param position: The position of the pawn on the board as a tuple (row, col).
         :param cell_size: The size of the board cell.
+        :param start_x: Initial X coordinates.
+        :param start_y: Initial Y coordinates.
         """
         image_name = "bp.png" if colour == "black" else "wp.png"
-        super().__init__(colour, position, cell_size, image_name)
+        super().__init__(color, position, cell_size, image_name, start_x, start_y)
         self.has_moved = False  # Flag indicating whether the pawn has moved
 
     def get_valid_moves(self, board):
