@@ -42,6 +42,7 @@ class Board:
         self.selected_piece = None
         self.valid_moves = []
         self.current_player = "white"
+        self.en_passant_target = None
 
         self.state_checker = GameStateChecker(self)
         self.renderer = BoardRenderer(
@@ -123,11 +124,14 @@ class Board:
         """
         # Adding black pawns
         for col in range(8):
-            self.grid[1][col] = Pawn("black", (1, col), self.cell_size, self.board_start_x, self.board_start_y)
-
+            pawn = Pawn("black", (1, col), self.cell_size, self.board_start_x, self.board_start_y)
+            pawn.board = self  # Add a link to the board
+            self.grid[1][col] = pawn
         # Adding white pawns
         for col in range(8):
-            self.grid[6][col] = Pawn("white", (6, col), self.cell_size, self.board_start_x, self.board_start_y)
+            pawn = Pawn("white", (6, col), self.cell_size, self.board_start_x, self.board_start_y)
+            pawn.board = self  # Add a link to the board
+            self.grid[6][col] = pawn
 
         # Adding black rooks
         self.grid[0][0] = Rook("black", (0, 0), self.cell_size, self.board_start_x, self.board_start_y)
