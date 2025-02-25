@@ -37,9 +37,18 @@ class Pawn(Piece):
 
         # Taking pieces diagonally
         for dc in [-1, 1]:  # Checking both diagonals
-            if 0 <= row + direction < 8 and 0 <= col + dc < 8:
+            if 0 <= col + dc < 8 and 0 <= row + direction < 8:
                 target = board[row + direction][col + dc]
-                if target is not None and target.colour != self.colour:
+                if target and target.color != self.color:
                     valid_moves.append((row + direction, col + dc))
+
+        # Взятие на проходе
+        if self.board.en_passant_target:
+            target_row, target_col = self.board.en_passant_target
+            # Проверяем что цель находится на соседней колонке и правильном ряду
+            if (row == target_row - direction and
+                    abs(col - target_col) == 1 and
+                    self.board.grid[target_row][target_col] is None):
+                valid_moves.append((target_row, target_col))
 
         return valid_moves
