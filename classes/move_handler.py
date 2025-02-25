@@ -124,6 +124,25 @@ class MoveHandler:
         """
         original_grid = [[self.board.grid[row][col] for col in range(8)] for row in range(8)]
         original_position = self.board.selected_piece.position
+        start_row, start_col = original_position
+        piece = self.board.selected_piece
+
+        # Resetting the capture flag on the pass
+        self.board.en_passant_target = None
+
+        # Processing of taking en-passant
+        if isinstance(piece, Pawn):
+            # Move two squares - set the correct target position
+            if abs(row - start_row) == 2:
+                direction = 1 if piece.colour == "black" else -1
+                self.board.en_passant_target = (start_row + direction, start_col)  # Position of the intermediate cell
+
+            # Performing a capture e-passant
+            if col != start_col and self.board.grid[row][col] is None:
+                # We remove the enemy pawn
+                captured_row = start_row  # The row where the attacking pawn stood
+                captured_col = col  # Column where the target went
+                self.board.grid[captured_row][captured_col] = None
 
         # Logging the move
         start_pos = self.board.selected_piece.position
@@ -155,6 +174,10 @@ class MoveHandler:
 
                 # Changing the player
                 self.board.current_player = "black" if self.board.current_player == "white" else "white"
+
+        # Update has_moved flag for pawn
+        if isinstance(piece, Pawn):
+            piece.has_moved = True
 
         # Resetting the chess piece selection
         self.board.selected_piece = None
