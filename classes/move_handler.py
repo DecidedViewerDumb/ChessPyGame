@@ -1,5 +1,6 @@
 import datetime
 import os
+import pygame
 from classes.pieces.king import King
 from classes.pieces.pawn import Pawn
 
@@ -178,6 +179,42 @@ class MoveHandler:
         # Update has_moved flag for pawn
         if isinstance(piece, Pawn):
             piece.has_moved = True
+
+        # After moving the king
+                if isinstance(piece, King):
+                    # Checking if the king is still in check
+                    if self.board.is_king_in_check(self.board.current_player):
+                        self.board.grid = original_grid
+                        piece.position = original_position
+                        return  # Undo move
+
+                if isinstance(piece, Pawn) and (
+                        (piece.colour == "white" and row == 0) or (piece.colour == "black" and row == 7)):
+                    self.board.promotion_active = True
+                    self.board.promotion_pawn = piece
+                    self.board.promotion_pos = (row, col)
+
+                    while self.board.promotion_active:
+                        screen = pygame.display.get_surface()
+                        self.board.draw(screen)
+                        self.board.draw_promotion_menu(screen, self.board.promotion_pawn)
+                        pygame.display.flip()
+
+                        for event in pygame.event.get():
+                            if event.type == pygame.MOUSEBUTTONDOWN:
+                                if self.board.handle_promotion_click(event.pos):
+                                    self.board.promotion_active = False
+
+                    # Replacing a pawn with the chosen piece
+                    new_piece = self.board.promotion_piece(
+                        self.board.promotion_pawn.colour,
+                        (row, col),
+                        self.board.cell_size,
+                        self.board.board_start_x,                            self.board.board_start_y
+                    )
+                    self.board.grid[self.board.promotion_pos[0]][self.board.promotion_pos[1]] = new_piece
+                self.board.promotion_pawn = None
+                self.board.promotion_piece = None
 
         # Resetting the chess piece selection
         self.board.selected_piece = None
