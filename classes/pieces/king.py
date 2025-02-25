@@ -35,6 +35,17 @@ class King(Piece):
             (row + 1, col - 1), (row + 1, col), (row + 1, col + 1),  # Bottom cells
         ]
 
+        # Finding the enemy king's position
+        enemy_king_pos = None
+        for r in range(8):
+            for c in range(8):
+                piece = board[r][c]
+                if isinstance(piece, King) and piece.colour != self.colour:
+                    enemy_king_pos = (r, c)
+                    break
+            if enemy_king_pos:
+                break
+
         # Check normal moves
         for r, c in moves:
             if 0 <= r < 8 and 0 <= c < 8:
@@ -43,21 +54,15 @@ class King(Piece):
                 if target and target.colour == self.colour:
                     continue
 
-                # Temporary movement of the king
-                original = board[row][col]
-                temp = board[r][c]
-                board[row][col] = None
-                board[r][c] = self
-                self.position = (r, c)
-
-                # Cage safety check
+                # Checking safe squares
                 if not self.is_square_attacked(board, r, c):
-                    valid_moves.append((r, c))
+                    # Checking the distance to the enemy king
+                    if enemy_king_pos:
+                        enemy_row, enemy_col = enemy_king_pos
+                        if abs(r - enemy_row) <= 1 and abs(c - enemy_col) <= 1:
+                            continue  # We skip a move if the kings are nearby
 
-                # Restoring the board
-                board[row][col] = original
-                board[r][c] = temp
-                self.position = (row, col)
+                    valid_moves.append((r, c))
 
         return valid_moves
 
