@@ -35,33 +35,29 @@ class King(Piece):
             (row + 1, col - 1), (row + 1, col), (row + 1, col + 1),  # Bottom cells
         ]
 
-        # Check every move
+        # Check normal moves
         for r, c in moves:
-            if 0 <= r < 8 and 0 <= c < 8:  # Check that the move is within the board
+            if 0 <= r < 8 and 0 <= c < 8:
                 target = board[r][c]
-                if target is None or target.colour != self.colour:
-                    # Temporary relocation of the king for security check
-                    original = board[row][col]
-                    board[row][col] = None
-                    temp_king = King(self.colour, (r, c), self.cell_size, self.start_x, self.start_y)
-                    board[r][c] = temp_king
+                # Skipping our chess pieces
+                if target and target.colour == self.colour:
+                    continue
 
-                    if not temp_king.is_square_attacked(board, r, c):
-                        valid_moves.append((r, c))
+                # Temporary movement of the king
+                original = board[row][col]
+                temp = board[r][c]
+                board[row][col] = None
+                board[r][c] = self
+                self.position = (r, c)
 
-                    # Restoring the original state
-                    board[row][col] = original
-                    board[r][c] = target
+                # Cage safety check
+                if not self.is_square_attacked(board, r, c):
+                    valid_moves.append((r, c))
 
-        # Add castling if the king and rook have not moved
-        if not self.has_moved:
-            # Kingside castling
-            if self.can_castle(board, row, col, 7) and not self.is_square_attacked(board, row, col):
-                valid_moves.append((row, col + 2))
-
-            # Queenside castling
-            if self.can_castle(board, row, col, 0) and not self.is_square_attacked(board, row, col):
-                valid_moves.append((row, col - 2))
+                # Restoring the board
+                board[row][col] = original
+                board[r][c] = temp
+                self.position = (row, col)
 
         return valid_moves
 
@@ -116,15 +112,19 @@ class King(Piece):
         opponent_colour = "black" if self.colour == "white" else "white"
 
         # Checking pawn attacks
-        direction = 1 if opponent_colour == "black" else -1
-        if (row + direction < 8) and (col - 1 >= 0):
-            if (isinstance(board[row + direction][col - 1], Pawn) and
-                    board[row + direction][col - 1].color == opponent_color):
-                return True
-        if (row + direction < 8) and (col + 1 < 8):
-            if (isinstance(board[row + direction][col + 1], Pawn) and
-                    board[row + direction][col + 1].color == opponent_color):
-                return True
+        pawn_direction = 1 if opponent_colour == "black" else -1  # Black pawns move down (increase row)
+
+        # Checking diagonal squares for pawn captures
+        attack_squares = [
+            (row - pawn_direction, col - 1),
+            (row - pawn_direction, col + 1)
+        ]
+
+        for r, c in attack_squares:
+            if 0 <= r < 8 and 0 <= c < 8:
+                piece = board[r][c]
+                if isinstance(piece, Pawn) and piece.colour == opponent_colour:
+                    return True
 
         # Checking the knight attacks
         knight_moves = [
