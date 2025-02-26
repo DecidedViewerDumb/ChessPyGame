@@ -22,7 +22,7 @@ class Board:
         self.screen_height = screen_height
         
         # Area sizes
-        self.board_width = int(screen_width * 0.7)  # 70% под доску
+        self.board_width = int(screen_width * 0.7)  # 70% under the board
         self.info_panel_width = screen_width - self.board_width
 
         # Calculation of board parameters
@@ -153,7 +153,7 @@ class Board:
         panel_center_x = self.info_panel_x + self.info_panel_width // 2
 
         # Current player
-        text = font.render(f"Ход: {self.current_player}", True, (255, 255, 255))
+        text = font.render(f"White: {self.current_player}", True, (255, 255, 255))
         text_rect = text.get_rect(center=(panel_center_x, self.screen_height // 2))
         screen.blit(text, text_rect)
 
