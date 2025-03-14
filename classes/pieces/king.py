@@ -36,6 +36,14 @@ class King(Piece):
             (row + 1, col - 1), (row + 1, col), (row + 1, col + 1),  # Нижние клетки
         ]
 
+        if not self.has_moved:
+            # Короткая рокировка (правая ладья)
+            if self.can_castle(board, row, col, 7):
+                valid_moves.append((row, col + 2))
+            # Длинная рокировка (левая ладья)
+            if self.can_castle(board, row, col, 0):
+                valid_moves.append((row, col - 2))
+
         # Найдем позицию вражеского короля
         enemy_king_pos = None
         for r in range(8):
@@ -78,34 +86,29 @@ class King(Piece):
         :param rook_col: Столбец ладьи (0 для длинной рокировки, 7 для короткой).
         :return: True, если рокировка возможна, иначе False.
         """
+        # Проверяем, что король не двигался
+        if self.has_moved:
+            return False
+
         # Проверяем, что ладья существует и не двигалась
         rook = board[row][rook_col]
         if not isinstance(rook, Rook) or rook.has_moved:
             return False
 
-        # Проверяем, что клетки между королем и ладьей пусты
-        if rook_col == 0:  # Длинная рокировка
-            for c in range(col - 1, rook_col, -1):
-                if board[row][c] is not None:
-                    return False
-        else:  # Короткая рокировка
-            for c in range(col + 1, rook_col):
-                if board[row][c] is not None:
-                    return False
+        # Определяем направление и проверяем пустые клетки между
+        step = 1 if rook_col > col else -1
+        for c in range(col + step, rook_col, step):
+            if board[row][c] is not None:
+                return False
 
         # Проверяем, что король не находится под шахом
         if self.is_square_attacked(board, row, col):
             return False
 
-        # Проверяем, что клетки, через которые проходит король, не атакованы
-        if rook_col == 0:  # Длинная рокировка
-            for c in range(col - 1, rook_col, -1):
-                if self.is_square_attacked(board, row, c):
-                    return False
-        else:  # Короткая рокировка
-            for c in range(col + 1, rook_col):
-                if self.is_square_attacked(board, row, c):
-                    return False
+        # Проверяем, что король не проходит через атакованные клетки
+        for c in range(col, rook_col + step, step):
+            if self.is_square_attacked(board, row, c):
+                return False
 
         return True
 

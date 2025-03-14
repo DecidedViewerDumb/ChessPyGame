@@ -19,10 +19,12 @@ class Menu:
         Создает кнопки для меню.
         :return: Список кнопок.
         """
+        vertical_spacing = 70  # Расстояние между кнопками
+        start_y = 300  # Начальная позиция по Y
         buttons = [
-            Button(200, 200, 50, "Игра против компьютера", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
-            Button(300, 200, 50, "Игра против человека", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
-            Button(400, 200, 50, "Выход", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
+            Button(start_y, "Игра против компьютера", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
+            Button(start_y + vertical_spacing, "Игра против человека", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
+            Button(start_y + vertical_spacing * 2, "Выход", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
         ]
         return buttons
 

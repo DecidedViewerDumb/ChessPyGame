@@ -69,10 +69,12 @@ def select_timer(screen, background, screen_width, screen_height, mode="human_vs
     pygame.display.set_caption("Select timer")
     # Создание кнопок для выбора таймера
     font = pygame.font.Font(None, 36)
+    vertical_spacing = 70  # Расстояние между кнопками
+    start_y = 300  # Начальная позиция по Y
     buttons = [
-        Button(200, 200, 50, "5 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
-        Button(300, 200, 50, "10 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
-        Button(400, 200, 50, "15 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
+        Button(start_y, "5 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
+        Button(start_y + vertical_spacing, "10 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
+        Button(start_y + vertical_spacing * 2, "15 минут", font, (0, 128, 255), (0, 255, 128), (255, 255, 255), screen_width),
     ]
 
     # Основной цикл для меню выбора таймера

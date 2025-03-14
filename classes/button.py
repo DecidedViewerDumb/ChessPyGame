@@ -2,36 +2,49 @@ import pygame
 
 
 class Button:
-    def __init__(self, y, width, height, text, font, color, hover_color, text_color, screen_width, visible=True):
+    def __init__(
+            self,
+            y,
+            text,
+            font,
+            color,
+            hover_color,
+            text_color,
+            screen_width,
+            padding_x=20,
+            padding_y=10,
+            visible=True
+    ):
         """
-        Инициализация кнопки.
-        :param y: Позиция кнопки по вертикали (от верхнего края экрана).
-        :param width: Ширина кнопки.
-        :param height: Высота кнопки.
-        :param text: Текст на кнопке.
-        :param font: Шрифт для текста.
-        :param color: Основной цвет кнопки.
-        :param hover_color: Цвет кнопки при наведении.
-        :param text_color: Цвет текста.
-        :param screen_width: Ширина экрана (для центрирования кнопки).
-        :param visible: Видимость кнопки (True/False).
+        Инициализация кнопки с автоматическим размером.
+        :param y: Позиция по вертикали
+        :param text: Текст кнопки
+        :param font: Шрифт для текста
+        :param color: Основной цвет
+        :param hover_color: Цвет при наведении
+        :param text_color: Цвет текста
+        :param screen_width: Ширина экрана для центрирования
+        :param padding_x: Отступ по горизонтали
+        :param padding_y: Отступ по вертикали
         """
-        self.width = width
-        self.height = height
         self.text = text
         self.font = font
         self.color = color
         self.hover_color = hover_color
         self.text_color = text_color
         self.hovered = False
-        self.visible = visible  # Параметр видимости
+        self.visible = visible
 
-        # Вычисляем позицию кнопки по горизонтали для центрирования
-        self.x = (screen_width - width) // 2
+        # Рассчитываем размеры кнопки на основе текста
+        text_width, text_height = self.font.size(self.text)
+        self.width = text_width + 2 * padding_x
+        self.height = text_height + 2 * padding_y
+
+        # Центрирование по горизонтали
+        self.x = (screen_width - self.width) // 2
         self.y = y
 
-        # Создаем прямоугольник для кнопки
-        self.rect = pygame.Rect(self.x, self.y, width, height)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self, screen):
         """
@@ -40,10 +53,8 @@ class Button:
         """
         if self.visible:  # Отрисовываем только если кнопка видима
             # Изменяем цвет кнопки, если наведена
-            if self.hovered:
-                pygame.draw.rect(screen, self.hover_color, self.rect)
-            else:
-                pygame.draw.rect(screen, self.color, self.rect)
+            color = self.hover_color if self.hovered else self.color
+            pygame.draw.rect(screen, color, self.rect, border_radius=5)
 
             # Рендерим текст
             text_surface = self.font.render(self.text, True, self.text_color)
