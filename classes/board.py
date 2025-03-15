@@ -244,6 +244,9 @@ class Board:
     def is_stalemate(self, color):
         return self.state_checker.is_stalemate(color)
 
+    def get_king_position(self, color):
+        return self.state_checker.find_king_position(color)
+
     def draw(self, screen):
         self.renderer.draw(screen)
 

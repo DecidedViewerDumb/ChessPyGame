@@ -11,7 +11,7 @@ class Menu:
         """
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.font = pygame.font.Font(None, 36)  # Создаем шрифт здесь
+        self.font = pygame.font.Font(None, 72)  # Создаем шрифт здесь
         self.buttons = self.create_buttons()
 
     def create_buttons(self):
@@ -19,8 +19,8 @@ class Menu:
         Создает кнопки для меню.
         :return: Список кнопок.
         """
-        vertical_spacing = 70  # Расстояние между кнопками
-        start_y = 300  # Начальная позиция по Y
+        vertical_spacing = 200  # Расстояние между кнопками
+        start_y = 200  # Начальная позиция по Y
         buttons = [
             Button(start_y, "Игра против компьютера", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
             Button(start_y + vertical_spacing, "Игра против человека", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),

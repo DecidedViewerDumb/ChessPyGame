@@ -69,3 +69,10 @@ class BoardRenderer:
                 piece = self.board.grid[row][col]
                 if piece:
                     piece.draw(screen)
+
+        # Подсветка короля под шахом
+        current_player_king_pos = self.board.get_king_position(self.board.current_player)
+        if self.board.state_checker.is_king_in_check(self.board.current_player):
+            x = self.start_x + current_player_king_pos[1] * self.cell_size
+            y = self.start_y + current_player_king_pos[0] * self.cell_size
+            pygame.draw.rect(screen, (255, 0, 0, 100), (x, y, self.cell_size, self.cell_size), 5)

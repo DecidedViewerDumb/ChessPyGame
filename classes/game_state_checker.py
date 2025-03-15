@@ -94,3 +94,14 @@ class GameStateChecker:
                     if piece.get_valid_moves(self.board.grid):
                         return False
         return True
+
+    def find_king_position(self, color):
+        """
+        Находит позицию короля указанного цвета
+        """
+        for row in range(8):
+            for col in range(8):
+                piece = self.board.grid[row][col]
+                if isinstance(piece, King) and piece.color == color:
+                    return row, col
+        return None
