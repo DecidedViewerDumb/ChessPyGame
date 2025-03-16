@@ -6,7 +6,7 @@ from classes.button import Button
 
 
 def main():
-    # Инициализация Pygame
+    # Initializing Pygame
     pygame.init()
 
     # Настройки экрана
