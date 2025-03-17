@@ -47,7 +47,7 @@ def main():
             result = menu.handle_event(event)
             if result == "Play against the computer":
                 select_timer(screen, background, SCREEN_WIDTH, SCREEN_HEIGHT, mode="human_vs_ai")
-            elif result == "PLay against a person":
+            elif result == "Play against a person":
                 select_timer(screen, background, SCREEN_WIDTH, SCREEN_HEIGHT, mode="human_vs_human")
             elif result == "Exit":
                 running = False

@@ -23,7 +23,7 @@ class Menu:
         start_y = 200  # Initial Y position
         buttons = [
             Button(start_y, "Play against the computer", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
-            Button(start_y + vertical_spacing, "Playing against a person", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
+            Button(start_y + vertical_spacing, "Play against a person", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
             Button(start_y + vertical_spacing * 2, "Exit", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
         ]
         return buttons
