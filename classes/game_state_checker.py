@@ -7,9 +7,9 @@ class GameStateChecker:
 
     def is_king_in_check(self, color):
         """
-        Проверяет, находится ли король под шахом.
-        :param color: Цвет короля ("black" или "white").
-        :return: True, если король под шахом, иначе False.
+        Checks if the king is in check.
+        :param color: The color of the king ("black" or "white").
+        :return: True if the king is in check, False otherwise.
         """
         king_pos = self.board.find_king_position(color)
         if not king_pos:
@@ -26,9 +26,9 @@ class GameStateChecker:
 
     def is_checkmate(self, color):
         """
-        Проверяет, находится ли король под матом.
-        :param color: Цвет короля ("black" или "white").
-        :return: True, если король под матом, иначе False.
+        Checks if the king is checkmated.
+        :param color: The color of the king ("black" or "white").
+        :return: True if the king is checkmated, otherwise False.
         """
         if not self.is_king_in_check(color):
             return False
@@ -80,9 +80,9 @@ class GameStateChecker:
 
     def is_stalemate(self, color):
         """
-        Проверяет, находится ли король под патом.
-        :param color: Цвет короля ("black" или "white").
-        :return: True, если король под патом, иначе False.
+        Checks if the king is stalemate.
+        :param color: The color of the king ("black" or "white").
+        :return: True if the king is stalemate, False otherwise.
         """
         if self.is_king_in_check(color):
             return False
@@ -97,7 +97,7 @@ class GameStateChecker:
 
     def find_king_position(self, color):
         """
-        Находит позицию короля указанного цвета
+        Finds the position of the king of the specified color
         """
         for row in range(8):
             for col in range(8):

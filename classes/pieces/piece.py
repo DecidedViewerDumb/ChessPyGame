@@ -5,32 +5,32 @@ import os
 class Piece:
     def __init__(self, color, position, cell_size, image_name, start_x, start_y):
         """
-        Базовый класс для всех фигур.
-        :param color: Цвет фигуры ("black" или "white").
-        :param position: Позиция фигуры на доске в виде кортежа (row, col).
-        :param cell_size: Размер клетки доски.
-        :param image_name: Имя файла изображения фигуры.
-        :param start_x: Начальные координаты по X.
-        :param start_y: Начальные координаты по Y.
+        Base class for all pieces.
+        :param color: The color of the piece ("black" or "white").
+        :param position: The position of the piece on the board as a tuple (row, col).
+        :param cell_size: The size of the board cell.
+        :param image_name: The file name of the piece image.
+        :param start_x: The initial X coordinates.
+        :param start_y: The initial Y coordinates.
         """
         self.color = color
-        self.position = position  # Позиция в виде (row, col)
+        self.position = position  # Position as (row, col)
         self.cell_size = cell_size
         self.start_x = start_x
         self.start_y = start_y
 
-        # Загрузка изображения фигуры
+        # Loading chess piece image
         image_path = os.path.join("images", image_name)
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (cell_size, cell_size))
 
-        # Масштабирование изображения под размер клетки
+        # Scaling an image to fit the cell size
         self.image = pygame.transform.scale(self.image, (cell_size, cell_size))
 
     def draw(self, screen):
         """
-        Отрисовка фигуры на экране.
-        :param screen: Экран, на котором отрисовывается фигура.
+        Drawing the figure on the screen.
+        :param screen: The screen on which the figure is drawn.
         """
         x = self.start_x + self.position[1] * self.cell_size
         y = self.start_y + self.position[0] * self.cell_size
@@ -38,8 +38,8 @@ class Piece:
 
     def get_valid_moves(self, board):
         """
-        Возвращает список допустимых ходов для фигуры.
-        :param board: Двумерный список, представляющий доску.
-        :return: Список допустимых ходов в виде кортежей (row, col).
+        Returns a list of legal moves for the piece.
+        :param board: A two-dimensional list representing the board.
+        :return: A list of legal moves as (row, col) tuples.
         """
-        raise NotImplementedError("Метод get_valid_moves должен быть переопределен в дочернем классе.")
+        raise NotImplementedError("The get_valid_moves method must be overridden in the child class.")

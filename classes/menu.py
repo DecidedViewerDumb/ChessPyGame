@@ -5,42 +5,42 @@ from classes.button import Button
 class Menu:
     def __init__(self, screen_width, screen_height):
         """
-        Инициализация меню.
-        :param screen_width: Ширина экрана.
-        :param screen_height: Высота экрана.
+        Initializing the menu.
+        :param screen_width: Screen width.
+        :param screen_height: Screen height.
         """
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.font = pygame.font.Font(None, 72)  # Создаем шрифт здесь
+        self.font = pygame.font.Font(None, 72)  # Creating a font
         self.buttons = self.create_buttons()
 
     def create_buttons(self):
         """
-        Создает кнопки для меню.
-        :return: Список кнопок.
+        Creates buttons for the menu.
+        :return: List of buttons.
         """
-        vertical_spacing = 200  # Расстояние между кнопками
-        start_y = 200  # Начальная позиция по Y
+        vertical_spacing = 200  # Distance between buttons
+        start_y = 200  # Initial Y position
         buttons = [
-            Button(start_y, "Игра против компьютера", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
-            Button(start_y + vertical_spacing, "Игра против человека", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
-            Button(start_y + vertical_spacing * 2, "Выход", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
+            Button(start_y, "Play against the computer", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
+            Button(start_y + vertical_spacing, "Playing against a person", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
+            Button(start_y + vertical_spacing * 2, "Exit", self.font, (0, 128, 255), (0, 255, 128), (255, 255, 255), self.screen_width),
         ]
         return buttons
 
     def draw(self, screen):
         """
-        Отрисовка меню.
-        :param screen: Экран, на котором отрисовывается меню.
+        Rendering the menu.
+        :param screen: The screen on which the menu is rendered.
         """
         for button in self.buttons:
             button.draw(screen)
 
     def handle_event(self, event):
         """
-        Обрабатывает события в меню.
-        :param event: Событие Pygame.
-        :return: Результат обработки (например, выбор режима игры).
+        Handles events in the menu.
+        :param event: Pygame event.
+        :return: The result of the processing (e.g. selecting a game mode).
         """
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()

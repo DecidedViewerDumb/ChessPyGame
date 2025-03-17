@@ -4,15 +4,15 @@ import random
 class RandomAI:
     def __init__(self, board):
         """
-        Инициализация AI.
-        :param board: Объект доски (Board).
+        Initialize AI.
+        :param board: Board object.
         """
         self.board = board
 
     def get_random_move(self):
         """
-        Возвращает случайный допустимый ход для чёрных.
-        :return: Кортеж ((start_row, start_col), (end_row, end_col)), представляющий ход.
+        Returns a random legal move for black.
+        :return: A tuple ((start_row, start_col), (end_row, end_col)) representing the move.
         """
         valid_moves = self.get_all_valid_moves_for_black()
         if valid_moves:
@@ -21,8 +21,8 @@ class RandomAI:
 
     def get_all_valid_moves_for_black(self):
         """
-        Возвращает все допустимые ходы для чёрных.
-        :return: Список кортежей ((start_row, start_col), (end_row, end_col)).
+        Returns all legal moves for black.
+        :return: List of tuples ((start_row, start_col), (end_row, end_col)).
         """
         valid_moves = []
         for row in range(8):

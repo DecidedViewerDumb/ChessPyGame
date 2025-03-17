@@ -12,12 +12,12 @@ class BoardRenderer:
 
     def draw(self, screen):
         """
-        Отрисовка доски и фигур.
-        :param screen: Экран, на котором отрисовывается доска.
+        Drawing the board and pieces.
+        :param screen: The screen on which the board is drawn.
         """
         pygame.draw.rect(
             screen,
-            (200, 200, 200),  # Цвет рамки
+            (200, 200, 200),  # Frame color
             (
                 self.start_x - self.border_size,
                 self.start_y - self.border_size,
@@ -26,7 +26,7 @@ class BoardRenderer:
             )
         )
 
-        # Отрисовка клеток
+        # Drawing cells
         colors = [(235, 235, 208), (119, 149, 86)]
         for row in range(8):
             for col in range(8):
@@ -35,11 +35,11 @@ class BoardRenderer:
                 color = colors[(row + col) % 2]
                 pygame.draw.rect(screen, color, (x, y, self.cell_size, self.cell_size))
 
-                # Подсветка допустимых ходов
+                # Highlighting of permissible moves
                 if (row, col) in self.board.valid_moves:
                     pygame.draw.rect(screen, (255, 0, 0), (x, y, self.cell_size, self.cell_size), 3)
 
-        # Подписи столбцов (a-h)
+        # File labels (a-h)
         for col in range(8):
             letter = chr(ord('A') + col)
             text = self.font.render(letter, True, (0, 0, 0))
@@ -51,7 +51,7 @@ class BoardRenderer:
             )
             screen.blit(text, text_rect)
 
-        # Подписи строк (1-8)
+        # Rank labels (1-8)
         for row in range(8):
             number = str(8 - row)
             text = self.font.render(number, True, (0, 0, 0))
@@ -63,14 +63,14 @@ class BoardRenderer:
             )
             screen.blit(text, text_rect)
 
-        # Отрисовка фигур
+        # Drawing the chess pieces
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
                 if piece:
                     piece.draw(screen)
 
-        # Подсветка короля под шахом
+        # Highlighting the king under check
         current_player_king_pos = self.board.get_king_position(self.board.current_player)
         if self.board.state_checker.is_king_in_check(self.board.current_player):
             x = self.start_x + current_player_king_pos[1] * self.cell_size

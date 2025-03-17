@@ -16,16 +16,16 @@ class Button:
             visible=True
     ):
         """
-        Инициализация кнопки с автоматическим размером.
-        :param y: Позиция по вертикали
-        :param text: Текст кнопки
-        :param font: Шрифт для текста
-        :param color: Основной цвет
-        :param hover_color: Цвет при наведении
-        :param text_color: Цвет текста
-        :param screen_width: Ширина экрана для центрирования
-        :param padding_x: Отступ по горизонтали
-        :param padding_y: Отступ по вертикали
+        Initialize an auto-sized button.
+        :param y: Vertical position
+        :param text: Button text
+        :param font: Font for text
+        :param color: Primary color
+        :param hover_color: Hover color
+        :param text_color: Text color
+        :param screen_width: Screen width to center
+        :param padding_x: Horizontal padding
+        :param padding_y: Vertical padding
         """
         self.text = text
         self.font = font
@@ -35,12 +35,12 @@ class Button:
         self.hovered = False
         self.visible = visible
 
-        # Рассчитываем размеры кнопки на основе текста
+        # Calculate button sizes based on text
         text_width, text_height = self.font.size(self.text)
         self.width = text_width + 2 * padding_x
         self.height = text_height + 2 * padding_y
 
-        # Центрирование по горизонтали
+        # Centering horizontally
         self.x = (screen_width - self.width) // 2
         self.y = y
 
@@ -48,40 +48,40 @@ class Button:
 
     def draw(self, screen):
         """
-        Отрисовка кнопки на экране (если она видима).
-        :param screen: Экран, на котором отрисовывается кнопка.
+        Draws the button on the screen (if it is visible).
+        :param screen: The screen on which the button is drawn.
         """
-        if self.visible:  # Отрисовываем только если кнопка видима
-            # Изменяем цвет кнопки, если наведена
+        if self.visible:  # Draw only if the button is visible
+            # Change button color when hovered
             color = self.hover_color if self.hovered else self.color
             pygame.draw.rect(screen, color, self.rect, border_radius=5)
 
-            # Рендерим текст
+            # Rendering text
             text_surface = self.font.render(self.text, True, self.text_color)
             text_rect = text_surface.get_rect(center=self.rect.center)
             screen.blit(text_surface, text_rect)
 
     def check_hover(self, mouse_pos):
         """
-        Проверка, наведен ли курсор на кнопку (если она видима).
-        :param mouse_pos: Позиция курсора мыши.
+        Check if the mouse is over the button (if it is visible).
+        :param mouse_pos: The position of the mouse cursor.
         """
-        if self.visible:  # Проверяем наведение только если кнопка видима
+        if self.visible:  # We check hover only if the button is visible
             self.hovered = self.rect.collidepoint(mouse_pos)
 
     def is_clicked(self, mouse_pos, mouse_pressed):
         """
-        Проверка, нажата ли кнопка (если она видима).
-        :param mouse_pos: Позиция курсора мыши.
-        :param mouse_pressed: Состояние кнопок мыши.
+        Check if the button is pressed (if it is visible).
+        :param mouse_pos: The position of the mouse cursor.
+        :param mouse_pressed: The state of the mouse buttons.
         """
-        if self.visible:  # Проверяем нажатие только если кнопка видима
+        if self.visible:  # We check for pressing only if the button is visible
             return self.hovered and mouse_pressed[0]
         return False
 
     def set_visible(self, visible):
         """
-        Устанавливает видимость кнопки.
-        :param visible: Булево значение (True/False).
+        Sets the visibility of the button.
+        :param visible: Boolean value (True/False).
         """
         self.visible = visible

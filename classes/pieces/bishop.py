@@ -4,26 +4,26 @@ from classes.pieces.piece import Piece
 class Bishop(Piece):
     def __init__(self, color, position, cell_size, start_x, start_y):
         """
-        Инициализация слона.
-        :param color: Цвет слона ("black" или "white").
-        :param position: Позиция слона на доске в виде кортежа (row, col).
-        :param cell_size: Размер клетки доски.
-        :param start_x: Начальные координаты по X.
-        :param start_y: Начальные координаты по Y.
+        Initialize the bishop.
+        :param color: The color of the bishop ("black" or "white").
+        :param position: The position of the bishop on the board as a tuple (row, col).
+        :param cell_size: The size of the board cell.
+        :param start_x: The initial X coordinates.
+        :param start_y: The initial Y coordinates.
         """
         image_name = "bB.png" if color == "black" else "wB.png"
         super().__init__(color, position, cell_size, image_name, start_x, start_y)
 
     def get_valid_moves(self, board):
         """
-        Возвращает список допустимых ходов для слона.
-        :param board: Двумерный список, представляющий доску.
-        :return: Список допустимых ходов в виде кортежей (row, col).
+        Returns a list of legal moves for the bishop.
+        :param board: A two-dimensional list representing the board.
+        :return: A list of legal moves as (row, col) tuples.
         """
         valid_moves = []
         row, col = self.position
 
-        # Движение по диагонали вверх-влево
+        # Diagonal movement up-left
         r, c = row - 1, col - 1
         while r >= 0 and c >= 0:
             if board[r][c] is None:
@@ -31,11 +31,11 @@ class Bishop(Piece):
             else:
                 if board[r][c].color != self.color:
                     valid_moves.append((r, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Breaking the loop if there is a chess piece in the way
             r -= 1
             c -= 1
 
-        # Движение по диагонали вверх-вправо
+        # Move diagonally up-right
         r, c = row - 1, col + 1
         while r >= 0 and c < 8:
             if board[r][c] is None:
@@ -43,11 +43,11 @@ class Bishop(Piece):
             else:
                 if board[r][c].color != self.color:
                     valid_moves.append((r, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Breaking the loop if there is a chess piece in the way
             r -= 1
             c += 1
 
-        # Движение по диагонали вниз-влево
+        # Diagonal movement down-left
         r, c = row + 1, col - 1
         while r < 8 and c >= 0:
             if board[r][c] is None:
@@ -55,11 +55,11 @@ class Bishop(Piece):
             else:
                 if board[r][c].color != self.color:
                     valid_moves.append((r, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             r += 1
             c -= 1
 
-        # Движение по диагонали вниз-вправо
+        # Move diagonally down-right
         r, c = row + 1, col + 1
         while r < 8 and c < 8:
             if board[r][c] is None:
@@ -67,7 +67,7 @@ class Bishop(Piece):
             else:
                 if board[r][c].color != self.color:
                     valid_moves.append((r, c))
-                break  # Прерываем цикл, если на пути стоит фигура
+                break  # Break the loop if there is a chess piece in the way
             r += 1
             c += 1
 
