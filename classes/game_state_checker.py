@@ -5,35 +5,35 @@ class GameStateChecker:
     def __init__(self, board):
         self.board = board
 
-    def is_king_in_check(self, color):
+    def is_king_in_check(self, colour):
         """
         Checks if the king is in check.
-        :param color: The color of the king ("black" or "white").
-        :return: True if the king is in check, False otherwise.
+        :param colour: The colour of the king ("black" or "white").
+        :return: True if the colour is in check, False otherwise.
         """
-        king_pos = self.board.find_king_position(color)
+        king_pos = self.board.find_king_position(colour)
         if not king_pos:
             return False
 
-        opponent_color = "black" if color == "white" else "white"
+        opponent_colour = "black" if colour == "white" else "white"
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
-                if piece and piece.color == opponent_color:
+                if piece and piece.colour == opponent_colour:
                     if king_pos in piece.get_valid_moves(self.board.grid):
                         return True
         return False
 
-    def is_checkmate(self, color):
+    def is_checkmate(self, colour):
         """
         Checks if the king is checkmated.
-        :param color: The color of the king ("black" or "white").
+        :param colour: The colour of the king ("black" or "white").
         :return: True if the king is checkmated, otherwise False.
         """
-        if not self.is_king_in_check(color):
+        if not self.is_king_in_check(colour):
             return False
 
-        king_pos = self.board.find_king_position(color)
+        king_pos = self.board.find_king_position(colour)
         if not king_pos:
             return False
 
@@ -47,7 +47,7 @@ class GameStateChecker:
             self.board.grid[move[0]][move[1]] = king
             king.position = move
 
-            if not self.is_king_in_check(color):
+            if not self.is_king_in_check(colour):
                 self.board.grid = temp_grid
                 king.position = temp_position
                 return False
@@ -58,7 +58,7 @@ class GameStateChecker:
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
-                if piece and piece.color == color and not isinstance(piece, King):
+                if piece and piece.colour == colour and not isinstance(piece, King):
                     valid_moves = piece.get_valid_moves(self.board.grid)
                     for move in valid_moves:
                         temp_grid = [[self.board.grid[row][col] for col in range(8)] for row in range(8)]
@@ -68,7 +68,7 @@ class GameStateChecker:
                         self.board.grid[move[0]][move[1]] = piece
                         piece.position = move
 
-                        if not self.is_king_in_check(color):
+                        if not self.is_king_in_check(colour):
                             self.board.grid = temp_grid
                             piece.position = temp_position
                             return False
@@ -78,30 +78,30 @@ class GameStateChecker:
 
         return True
 
-    def is_stalemate(self, color):
+    def is_stalemate(self, colour):
         """
         Checks if the king is stalemate.
-        :param color: The color of the king ("black" or "white").
+        :param colour: The colour of the king ("black" or "white").
         :return: True if the king is stalemate, False otherwise.
         """
-        if self.is_king_in_check(color):
+        if self.is_king_in_check(colour):
             return False
 
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
-                if piece and piece.color == color:
+                if piece and piece.colour == colour:
                     if piece.get_valid_moves(self.board.grid):
                         return False
         return True
 
-    def find_king_position(self, color):
+    def find_king_position(self, colour):
         """
-        Finds the position of the king of the specified color
+        Finds the position of the king of the specified colour
         """
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
-                if isinstance(piece, King) and piece.color == color:
+                if isinstance(piece, King) and piece.colour == colour:
                     return row, col
         return None

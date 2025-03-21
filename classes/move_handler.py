@@ -64,7 +64,7 @@ class MoveHandler:
         if self.board.selected_piece is None:
             # If the chess piece isnt selected select the current players figure
             piece = self.board.grid[row][col]
-            if piece is not None and piece.color == self.board.current_player:
+            if piece is not None and piece.colour == self.board.current_player:
                 self.board.selected_piece = piece
                 self.board.valid_moves = piece.get_valid_moves(self.board.grid)
 
@@ -83,7 +83,7 @@ class MoveHandler:
             else:
                 # If you click on another chess piece select it (if it belongs to the current player))
                 piece = self.board.grid[row][col]
-                if piece is not None and piece.color == self.board.current_player:
+                if piece is not None and piece.colour == self.board.current_player:
                     self.board.selected_piece = piece
                     self.board.valid_moves = piece.get_valid_moves(self.board.grid)
 
@@ -138,7 +138,7 @@ class MoveHandler:
         if isinstance(piece, Pawn):
             # Move two squares - set the correct target position
             if abs(row - start_row) == 2:
-                direction = 1 if piece.color == "black" else -1
+                direction = 1 if piece.colour == "black" else -1
                 self.board.en_passant_target = (start_row + direction, start_col)  #Position of the INTERMEDIATE cell
 
             # Performing en-passant
@@ -169,7 +169,7 @@ class MoveHandler:
                 self.board.selected_piece.position = original_position
             else:
                 # If the move is valid, we complete it.
-                if self.board.grid[row][col] is not None and self.board.grid[row][col].color != self.board.current_player:
+                if self.board.grid[row][col] is not None and self.board.grid[row][col].colour != self.board.current_player:
                     self.board.grid[row][col] = None
 
                 # Set the has_moved flag for the pawn
@@ -191,7 +191,7 @@ class MoveHandler:
                 piece.position = original_position
                 return  # Undo move
 
-        if isinstance(piece, Pawn) and ((piece.color == "white" and row == 0) or (piece.color == "black" and row == 7)):
+        if isinstance(piece, Pawn) and ((piece.colour == "white" and row == 0) or (piece.colour == "black" and row == 7)):
             self.board.promotion_active = True
             self.board.promotion_pawn = piece
             self.board.promotion_pos = (row, col)
@@ -209,7 +209,7 @@ class MoveHandler:
 
             # Replacing the pawn with the selected piece
             new_piece = self.board.promotion_piece(
-                self.board.promotion_pawn.color,
+                self.board.promotion_pawn.colour,
                 (row, col),
                 self.board.cell_size,
                 self.board.board_start_x,

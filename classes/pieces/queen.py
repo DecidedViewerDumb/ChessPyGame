@@ -2,17 +2,17 @@ from classes.pieces.piece import Piece
 
 
 class Queen(Piece):
-    def __init__(self, color, position, cell_size, start_x, start_y):
+    def __init__(self, colour, position, cell_size, start_x, start_y):
         """
         Initialize the queen.
-        :param color: The queen's color ("black" or "white").
+        :param colour: The queen's colour ("black" or "white").
         :param position: The queen's position on the board as a tuple (row, col).
         :param cell_size: The size of the board cell.
         :param start_x: The initial X coordinates.
         :param start_y: The initial Y coordinates.
         """
-        image_name = "bQ.png" if color == "black" else "wQ.png"
-        super().__init__(color, position, cell_size, image_name, start_x, start_y)
+        image_name = "bQ.png" if colour == "black" else "wQ.png"
+        super().__init__(colour, position, cell_size, image_name, start_x, start_y)
 
     def get_valid_moves(self, board):
         """
@@ -30,7 +30,7 @@ class Queen(Piece):
             if board[r][col] is None:
                 valid_moves.append((r, col))
             else:
-                if board[r][col].color != self.color:
+                if board[r][col].colour != self.colour:
                     valid_moves.append((r, col))
                 break  # Breaking the loop if there is a chess piece in the way
             r -= 1
@@ -41,7 +41,7 @@ class Queen(Piece):
             if board[r][col] is None:
                 valid_moves.append((r, col))
             else:
-                if board[r][col].color != self.color:
+                if board[r][col].colour != self.colour:
                     valid_moves.append((r, col))
                 break  # Breaking the loop if there is a chess piece in the way
             r += 1
@@ -52,7 +52,7 @@ class Queen(Piece):
             if board[row][c] is None:
                 valid_moves.append((row, c))
             else:
-                if board[row][c].color != self.color:
+                if board[row][c].colour != self.colour:
                     valid_moves.append((row, c))
                 break  # Breaking the loop if there is a chess piece in the way
             c -= 1
@@ -63,7 +63,7 @@ class Queen(Piece):
             if board[row][c] is None:
                 valid_moves.append((row, c))
             else:
-                if board[row][c].color != self.color:
+                if board[row][c].colour != self.colour:
                     valid_moves.append((row, c))
                 break  # Breaking the loop if there is a chess piece in the way
             c += 1
@@ -75,7 +75,7 @@ class Queen(Piece):
             if board[r][c] is None:
                 valid_moves.append((r, c))
             else:
-                if board[r][c].color != self.color:
+                if board[r][c].colour != self.colour:
                     valid_moves.append((r, c))
                 break  # Breaking the loop if there is a chess piece in the way
             r -= 1
@@ -87,7 +87,7 @@ class Queen(Piece):
             if board[r][c] is None:
                 valid_moves.append((r, c))
             else:
-                if board[r][c].color != self.color:
+                if board[r][c].colour != self.colour:
                     valid_moves.append((r, c))
                 break  # Breaking the loop if there is a chess piece in the way
             r -= 1
@@ -99,7 +99,7 @@ class Queen(Piece):
             if board[r][c] is None:
                 valid_moves.append((r, c))
             else:
-                if board[r][c].color != self.color:
+                if board[r][c].colour != self.colour:
                     valid_moves.append((r, c))
                 break  # Breaking the loop if there is a chess piece in the way
             r += 1
@@ -111,7 +111,7 @@ class Queen(Piece):
             if board[r][c] is None:
                 valid_moves.append((r, c))
             else:
-                if board[r][c].color != self.color:
+                if board[r][c].colour != self.colour:
                     valid_moves.append((r, c))
                 break  # Breaking the loop if there is a chess piece in the way
             r += 1

@@ -3,17 +3,17 @@ import os
 
 
 class Piece:
-    def __init__(self, color, position, cell_size, image_name, start_x, start_y):
+    def __init__(self, colour, position, cell_size, image_name, start_x, start_y):
         """
         Base class for all pieces.
-        :param color: The color of the piece ("black" or "white").
+        :param colour: The colour of the piece ("black" or "white").
         :param position: The position of the piece on the board as a tuple (row, col).
         :param cell_size: The size of the board cell.
         :param image_name: The file name of the piece image.
         :param start_x: The initial X coordinates.
         :param start_y: The initial Y coordinates.
         """
-        self.color = color
+        self.colour = colour
         self.position = position  # Position as (row, col)
         self.cell_size = cell_size
         self.start_x = start_x

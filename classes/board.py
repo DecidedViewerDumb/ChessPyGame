@@ -72,7 +72,7 @@ class Board:
         self.promotion_buttons = []
 
     def draw_promotion_menu(self, screen, pawn):
-        colors = [(235, 235, 208), (119, 149, 86)]
+        colours = [(235, 235, 208), (119, 149, 86)]
         menu_width = 4 * self.cell_size
 
         col = pawn.position[1]
@@ -85,7 +85,7 @@ class Board:
         menu_y = self.board_start_y + pawn.position[0] * self.cell_size
 
         # Adjusting the position for black pawns
-        if pawn.color == "black":
+        if pawn.colour == "black":
             menu_y -= 3 * self.cell_size
 
         # Selection window frame
@@ -100,11 +100,11 @@ class Board:
             self.promotion_buttons.append((rect, piece_class))
 
             # Drawing a button with a frame
-            pygame.draw.rect(screen, colors[i % 2], rect)
+            pygame.draw.rect(screen, colours[i % 2], rect)
             pygame.draw.rect(screen, (0, 0, 0), rect, 1)
 
             name_piece = piece_class.__name__[0] if not piece_class == Knight else 'N'
-            image_name = f"{'b' if pawn.color == 'black' else 'w'}{name_piece}.png"
+            image_name = f"{'b' if pawn.colour == 'black' else 'w'}{name_piece}.png"
             image = pygame.image.load(os.path.join("images", image_name))
             image = pygame.transform.scale(image, (self.cell_size, self.cell_size))
             screen.blit(image, (x, menu_y))
@@ -222,30 +222,30 @@ class Board:
         # Adding the white king
         self.grid[7][4] = King("white", (7, 4), self.cell_size, self.board_start_x, self.board_start_y)
 
-    def find_king_position(self, color):
+    def find_king_position(self, colour):
         """
         Finds the king's position on the board.
-        :param color: The king's color ("black" or "white").
+        :param colour: The king's colour ("black" or "white").
         :return: The king's position as a tuple (row, col).
         """
         for row in range(8):
             for col in range(8):
                 piece = self.grid[row][col]
-                if isinstance(piece, King) and piece.color == color:
+                if isinstance(piece, King) and piece.colour == colour:
                     return row, col
         return None
 
-    def is_king_in_check(self, color):
-        return self.state_checker.is_king_in_check(color)
+    def is_king_in_check(self, colour):
+        return self.state_checker.is_king_in_check(colour)
 
-    def is_checkmate(self, color):
-        return self.state_checker.is_checkmate(color)
+    def is_checkmate(self, colour):
+        return self.state_checker.is_checkmate(colour)
 
-    def is_stalemate(self, color):
-        return self.state_checker.is_stalemate(color)
+    def is_stalemate(self, colour):
+        return self.state_checker.is_stalemate(colour)
 
-    def get_king_position(self, color):
-        return self.state_checker.find_king_position(color)
+    def get_king_position(self, colour):
+        return self.state_checker.find_king_position(colour)
 
     def draw(self, screen):
         self.renderer.draw(screen)

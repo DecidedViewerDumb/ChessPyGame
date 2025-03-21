@@ -7,9 +7,9 @@ class Button:
             y,
             text,
             font,
-            color,
-            hover_color,
-            text_color,
+            colour,
+            hover_colour,
+            text_colour,
             screen_width,
             padding_x=20,
             padding_y=10,
@@ -20,18 +20,18 @@ class Button:
         :param y: Vertical position
         :param text: Button text
         :param font: Font for text
-        :param color: Primary color
-        :param hover_color: Hover color
-        :param text_color: Text color
+        :param colour: Primary colour
+        :param hover_colour: Hover colour
+        :param text_colour: Text colour
         :param screen_width: Screen width to center
         :param padding_x: Horizontal padding
         :param padding_y: Vertical padding
         """
         self.text = text
         self.font = font
-        self.color = color
-        self.hover_color = hover_color
-        self.text_color = text_color
+        self.colour = colour
+        self.colour = hover_colour
+        self.colour = text_colour
         self.hovered = False
         self.visible = visible
 
@@ -52,12 +52,12 @@ class Button:
         :param screen: The screen on which the button is drawn.
         """
         if self.visible:  # Draw only if the button is visible
-            # Change button color when hovered
-            color = self.hover_color if self.hovered else self.color
-            pygame.draw.rect(screen, color, self.rect, border_radius=5)
+            # Change button colour when hovered
+            colour = self.hover_colour if self.hovered else self.colour
+            pygame.draw.rect(screen, colour, self.rect, border_radius=5)
 
             # Rendering text
-            text_surface = self.font.render(self.text, True, self.text_color)
+            text_surface = self.font.render(self.text, True, self.text_colour)
             text_rect = text_surface.get_rect(center=self.rect.center)
             screen.blit(text_surface, text_rect)
 

@@ -17,7 +17,7 @@ class BoardRenderer:
         """
         pygame.draw.rect(
             screen,
-            (200, 200, 200),  # Frame color
+            (200, 200, 200),  # Frame colour
             (
                 self.start_x - self.border_size,
                 self.start_y - self.border_size,
@@ -27,13 +27,13 @@ class BoardRenderer:
         )
 
         # Drawing cells
-        colors = [(235, 235, 208), (119, 149, 86)]
+        colours = [(235, 235, 208), (119, 149, 86)]
         for row in range(8):
             for col in range(8):
                 x = self.start_x + col * self.cell_size
                 y = self.start_y + row * self.cell_size
-                color = colors[(row + col) % 2]
-                pygame.draw.rect(screen, color, (x, y, self.cell_size, self.cell_size))
+                colour = colours[(row + col) % 2]
+                pygame.draw.rect(screen, colour, (x, y, self.cell_size, self.cell_size))
 
                 # Highlighting of permissible moves
                 if (row, col) in self.board.valid_moves:

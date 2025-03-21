@@ -28,7 +28,7 @@ class RandomAI:
         for row in range(8):
             for col in range(8):
                 piece = self.board.grid[row][col]
-                if piece and piece.color == "black":
+                if piece and piece.colour == "black":
                     moves = piece.get_valid_moves(self.board.grid)
                     for move in moves:
                         valid_moves.append(((row, col), move))

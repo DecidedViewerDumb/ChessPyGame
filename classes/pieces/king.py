@@ -7,17 +7,17 @@ from classes.pieces.rook import Rook
 
 
 class King(Piece):
-    def __init__(self, color, position, cell_size, start_x, start_y):
+    def __init__(self, colour, position, cell_size, start_x, start_y):
         """
         Initialize the king.
-        :param color: The color of the king ("black" or "white").
+        :param colour: The colour of the king ("black" or "white").
         :param position: The position of the king on the board as a tuple (row, col).
         :param cell_size: The size of the board cell.
         :param start_x: The initial X coordinates.
         :param start_y: The initial Y coordinates.
         """
-        image_name = "bK.png" if color == "black" else "wK.png"
-        super().__init__(color, position, cell_size, image_name, start_x, start_y)
+        image_name = "bK.png" if colour == "black" else "wK.png"
+        super().__init__(colour, position, cell_size, image_name, start_x, start_y)
         self.has_moved = False  # A flag indicating whether the king has moved
 
     def get_valid_moves(self, board):
@@ -49,7 +49,7 @@ class King(Piece):
         for r in range(8):
             for c in range(8):
                 piece = board[r][c]
-                if isinstance(piece, King) and piece.color != self.color:
+                if isinstance(piece, King) and piece.colour != self.colour:
                     enemy_king_pos = (r, c)
                     break
             if enemy_king_pos:
@@ -61,7 +61,7 @@ class King(Piece):
                 target = board[r][c]
 
                 # Skipping our chess pieces
-                if target and target.color == self.color:
+                if target and target.colour == self.colour:
                     continue
 
                 # Checking safety of squares
@@ -120,10 +120,10 @@ class King(Piece):
         :param col: The column of the cell.
         :return: True if the cell is attacked, otherwise False.
         """
-        opponent_color = "black" if self.color == "white" else "white"
+        opponent_colour = "black" if self.colour == "white" else "white"
 
         # Checking pawn attacks
-        pawn_direction = 1 if opponent_color == "black" else -1  # Black pawns move down (increase row)
+        pawn_direction = 1 if opponent_colour == "black" else -1  # Black pawns move down (increase row)
 
         # Checking diagonal squares for pawn capture
         attack_squares = [
@@ -134,7 +134,7 @@ class King(Piece):
         for r, c in attack_squares:
             if 0 <= r < 8 and 0 <= c < 8:
                 piece = board[r][c]
-                if isinstance(piece, Pawn) and piece.color == opponent_color:
+                if isinstance(piece, Pawn) and piece.colour == opponent_ccolour:
                     return True
 
         # Checking the attacks of the knights
@@ -147,7 +147,7 @@ class King(Piece):
         for r, c in knight_moves:
             if 0 <= r < 8 and 0 <= c < 8:
                 piece = board[r][c]
-                if isinstance(piece, Knight) and piece.color == opponent_color:
+                if isinstance(piece, Knight) and piece.colour == opponent_colour:
                     return True
 
         # Checking the attacks of bishops, rooks and queens
@@ -156,7 +156,7 @@ class King(Piece):
             while 0 <= r < 8 and 0 <= c < 8:
                 piece = board[r][c]
                 if piece is not None:
-                    if piece.color == opponent_color:
+                    if piece.colour == opponent_colour:
                         if isinstance(piece, Bishop) and abs(dr) == abs(dc):
                             return True
                         if isinstance(piece, Rook) and (dr == 0 or dc == 0):

@@ -2,17 +2,17 @@ from classes.pieces.piece import Piece
 
 
 class Rook(Piece):
-    def __init__(self, color, position, cell_size, start_x, start_y):
+    def __init__(self, colour, position, cell_size, start_x, start_y):
         """
         Initialize the rook.
-        :param color: The color of the rook ("black" or "white").
+        :param colour: The colour of the rook ("black" or "white").
         :param position: The position of the rook on the board as a tuple (row, col).
         :param cell_size: The size of the board cell.
         :param start_x: The initial X coordinates.
         :param start_y: The initial Y coordinates.
         """
-        image_name = "bR.png" if color == "black" else "wR.png"
-        super().__init__(color, position, cell_size, image_name, start_x, start_y)
+        image_name = "bR.png" if colour == "black" else "wR.png"
+        super().__init__(colour, position, cell_size, image_name, start_x, start_y)
         self.has_moved = False  # A flag indicating whether the king has moved
     def get_valid_moves(self, board):
         """
@@ -28,7 +28,7 @@ class Rook(Piece):
             if board[r][col] is None:
                 valid_moves.append((r, col))
             else:
-                if board[r][col].color != self.color:
+                if board[r][col].colour != self.colour:
                     valid_moves.append((r, col))
                 break  # Breaking the loop if there is a chess piece in the way
 
@@ -37,7 +37,7 @@ class Rook(Piece):
             if board[r][col] is None:
                 valid_moves.append((r, col))
             else:
-                if board[r][col].color != self.color:
+                if board[r][col].colour != self.colour:
                     valid_moves.append((r, col))
                 break  # Breaking the loop if there is a chess piece in the way
 
@@ -46,7 +46,7 @@ class Rook(Piece):
             if board[row][c] is None:
                 valid_moves.append((row, c))
             else:
-                if board[row][c].color != self.color:
+                if board[row][c].colour != self.colour:
                     valid_moves.append((row, c))
                 break  # Breaking the loop if there is a chess piece in the way
 
@@ -55,7 +55,7 @@ class Rook(Piece):
             if board[row][c] is None:
                 valid_moves.append((row, c))
             else:
-                if board[row][c].color != self.color:
+                if board[row][c].colour != self.colour:
                     valid_moves.append((row, c))
                 break  # Breaking the loop if there is a chess piece in the way
 
