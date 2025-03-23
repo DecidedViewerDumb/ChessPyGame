@@ -30,8 +30,8 @@ class Button:
         self.text = text
         self.font = font
         self.colour = colour
-        self.colour = hover_colour
-        self.colour = text_colour
+        self.hover_colour = hover_colour
+        self.text_colour = text_colour
         self.hovered = False
         self.visible = visible
 

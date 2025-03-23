@@ -134,7 +134,7 @@ class King(Piece):
         for r, c in attack_squares:
             if 0 <= r < 8 and 0 <= c < 8:
                 piece = board[r][c]
-                if isinstance(piece, Pawn) and piece.colour == opponent_ccolour:
+                if isinstance(piece, Pawn) and piece.colour == opponent_colour:
                     return True
 
         # Checking the attacks of the knights
